@@ -2,11 +2,24 @@ import pygame
 from global_config import GRID_CELL_SIZE, SCREEN_SIZE
 
 
-class GridSquare:
+class Grid:
 
-    def __init__(self, x, y):
+    def draw(self, screen):
+        pnt = GRID_CELL_SIZE
+        while pnt < SCREEN_SIZE:
+            pygame.draw.line(screen, "Black", (pnt, 0), (pnt, SCREEN_SIZE))
+            pygame.draw.line(screen, "Black", (0, pnt), (SCREEN_SIZE, pnt))
+            pnt += GRID_CELL_SIZE
+
+
+class GridSquare(pygame.Rect):
+
+    def __init__(self, x, y, color="Black"):
+        pygame.Rect.__init__(self, self.x, self.y,
+                             GRID_CELL_SIZE, GRID_CELL_SIZE)
         self.x = x
         self.y = y
+        self.color = color
 
     def move_right(self):
         if self.x + GRID_CELL_SIZE < SCREEN_SIZE:
@@ -25,6 +38,4 @@ class GridSquare:
             self.y += GRID_CELL_SIZE
 
     def draw(self, screen):
-        pygame.draw.rect(screen, "Black",
-                         pygame.Rect(self.x, self.y,
-                                     GRID_CELL_SIZE, GRID_CELL_SIZE))
+        pygame.draw.rect(screen, self.color, self)

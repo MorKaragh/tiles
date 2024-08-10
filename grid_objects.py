@@ -7,9 +7,19 @@ class Grid:
     def draw(self, screen):
         pnt = GRID_CELL_SIZE
         while pnt < SCREEN_SIZE:
-            pygame.draw.line(screen, "Black", (pnt, 0), (pnt, SCREEN_SIZE))
-            pygame.draw.line(screen, "Black", (0, pnt), (SCREEN_SIZE, pnt))
+            pygame.draw.line(screen, "Grey", (pnt, 0), (pnt, SCREEN_SIZE))
+            pygame.draw.line(screen, "Grey", (0, pnt), (SCREEN_SIZE, pnt))
             pnt += GRID_CELL_SIZE
+
+
+class GridSolidRow(pygame.Rect):
+
+    def __init__(self, y, color="Green"):
+        pygame.Rect.__init__(self, 0, y, SCREEN_SIZE, GRID_CELL_SIZE)
+        self.color = color
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.color, self)
 
 
 class GridSquare(pygame.Rect):

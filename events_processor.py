@@ -3,11 +3,7 @@ from opponent_ai import move_opponent
 
 
 def process_events(event, player, opponent):
-    global running
-    if event.type == pygame.QUIT:
-        pygame.quit()
-        running = False
-    elif event.type == pygame.KEYDOWN:
+    if event.type == pygame.KEYDOWN:
         if event.key in [pygame.K_UP, pygame.K_k]:
             move_opponent(player, opponent)
             player.move_up()

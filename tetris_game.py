@@ -1,4 +1,5 @@
 import pygame
+import time
 from gaming_grid import GamingGrid, TetrisFigure, TetrisFugureFactory
 
 clock = pygame.time.Clock()
@@ -15,13 +16,20 @@ figure_factory = TetrisFugureFactory(10, 15)
 player = figure_factory.brick(5, 0)
 grid.add_figure(player)
 
+last_time = time.time()
+last_move_time = 0
 
 while running:
     clock.tick(60)
+    last_move_time = last_move_time + time.time() - last_time
+    last_time = time.time()
+
+    if last_move_time > 0.5:
+        player.move_down()
+        last_move_time = 0
+
     screen.fill("White")
-
     grid.draw(screen)
-
     pygame.display.update()
 
     for event in pygame.event.get():

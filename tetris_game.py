@@ -1,20 +1,23 @@
 import pygame
 import time
-from gaming_grid import GamingGrid, TetrisFigure, TetrisFugureFactory
+from gaming_grid import GamingGrid, TetrisFugureFactory
 
 clock = pygame.time.Clock()
 running = True
 
+GRID_ROWS = 25
+GRID_COLS = 15
+SQUARE_SIZE = 20
+
 pygame.init()
-screen = pygame.display.set_mode((1000, 1000))
+screen = pygame.display.set_mode((GRID_COLS * SQUARE_SIZE,
+                                  GRID_ROWS * SQUARE_SIZE))
 pygame.display.set_caption("Grid framework testing")
 pygame.display.set_icon(pygame.image.load("images/icon.png"))
 
-GRID_ROWS = 15
-GRID_COLS = 10
-grid = GamingGrid(GRID_COLS, GRID_ROWS, 50)
-figure_factory = TetrisFugureFactory(GRID_COLS, GRID_ROWS)
-player = figure_factory.brick(4, 0)
+grid = GamingGrid(GRID_COLS, GRID_ROWS, "Grey", SQUARE_SIZE)
+figure_factory = TetrisFugureFactory(GRID_COLS, GRID_ROWS, SQUARE_SIZE)
+player = figure_factory.random(4, 0)
 grid.add_figure(player)
 
 last_time = time.time()
@@ -35,7 +38,7 @@ while running:
         if not is_blocked:
             player.move_down()
         else:
-            player = figure_factory.brick(4, 0)
+            player = figure_factory.random(4, 0)
             grid.add_figure(player)
 
     screen.fill("White")

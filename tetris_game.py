@@ -1,6 +1,7 @@
 import pygame
 import time
-from gaming_grid import GamingGrid, TetrisFugureFactory
+from gaming_grid import GamingGrid
+from figures import TetrisFugureFactory, FigureMovement
 
 clock = pygame.time.Clock()
 running = True
@@ -17,8 +18,9 @@ pygame.display.set_icon(pygame.image.load("images/icon.png"))
 
 grid = GamingGrid(GRID_COLS, GRID_ROWS, "Grey", SQUARE_SIZE)
 figure_factory = TetrisFugureFactory(GRID_COLS, GRID_ROWS, SQUARE_SIZE)
+
 player = figure_factory.random(4, 0)
-grid.add_figure(player)
+player.add_on_grid(grid)
 
 last_time = time.time()
 last_move_time = 0
@@ -30,16 +32,9 @@ while running:
 
     if last_move_time > 0.2:
         last_move_time = 0
-        is_blocked = False
-        for s in player.get_bottom_border_squares():
-            if s.row == GRID_ROWS - 1 or grid.has_square_in(s.row + 1, s.col):
-                is_blocked = True
-                break
-        if not is_blocked:
-            player.move_down()
-        else:
+        if not FigureMovement.fall_down(player, grid):
             player = figure_factory.random(4, 0)
-            grid.add_figure(player)
+            player.add_on_grid(grid)
 
     screen.fill("White")
     grid.draw(screen)
@@ -56,6 +51,8 @@ while running:
             elif event.key in [pygame.K_DOWN, pygame.K_j]:
                 player.move_down()
             elif event.key in [pygame.K_RIGHT, pygame.K_l]:
-                player.move_right()
+                print("right")
+                FigureMovement.move_figure_right(player, grid)
             elif event.key in [pygame.K_LEFT, pygame.K_h]:
-                player.move_left()
+                print("left")
+                FigureMovement.move_figure_left(player, grid)

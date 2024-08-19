@@ -9,6 +9,7 @@ running = True
 GRID_ROWS = 25
 GRID_COLS = 15
 SQUARE_SIZE = 20
+SPEED_FACTOR = 0.2
 
 pygame.init()
 screen = pygame.display.set_mode((GRID_COLS * SQUARE_SIZE,
@@ -30,7 +31,7 @@ while running:
     last_move_time = last_move_time + time.time() - last_time
     last_time = time.time()
 
-    if last_move_time > 0.2:
+    if last_move_time > SPEED_FACTOR:
         last_move_time = 0
         if not FigureMovement.fall_down(player, grid):
             player = figure_factory.random(4, 0)
@@ -46,13 +47,11 @@ while running:
             running = False
         if event.type == pygame.KEYDOWN:
             if event.key in [pygame.K_UP, pygame.K_k]:
-                pass
+                player.rotate()
                 # player.move_up()
             elif event.key in [pygame.K_DOWN, pygame.K_j]:
                 player.move_down()
             elif event.key in [pygame.K_RIGHT, pygame.K_l]:
-                print("right")
                 FigureMovement.move_figure_right(player, grid)
             elif event.key in [pygame.K_LEFT, pygame.K_h]:
-                print("left")
                 FigureMovement.move_figure_left(player, grid)

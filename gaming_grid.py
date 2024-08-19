@@ -28,7 +28,6 @@ class GridSquare(pygame.Rect):
     def move_right(self, step: int = 1):
         if self.has_space_right(step):
             self.col += step
-            self.x += self.sizepx * step
 
     def has_space_right(self, step: int = 1):
         return self.col + step < self.col_max
@@ -36,7 +35,6 @@ class GridSquare(pygame.Rect):
     def move_left(self, step: int = 1):
         if self.has_space_left(step):
             self.col -= step
-            self.x -= self.sizepx * step
 
     def has_space_left(self, step: int = 1):
         return self.col - step >= 0
@@ -44,7 +42,6 @@ class GridSquare(pygame.Rect):
     def move_up(self, step: int = 1):
         if self.has_space_up:
             self.row -= step
-            self.y -= self.sizepx * step
 
     def has_space_up(self, step: int = 1):
         return self.row - step >= 0
@@ -52,12 +49,13 @@ class GridSquare(pygame.Rect):
     def move_down(self, step: int = 1):
         if self.has_space_down(step):
             self.row += step
-            self.y += self.sizepx * step
 
     def has_space_down(self, step: int = 1):
         return self.row + step < self.row_max
 
     def draw(self, screen):
+        self.x = self.col * self.sizepx
+        self.y = self.row * self.sizepx
         pygame.draw.rect(screen, self.color, self)
 
 

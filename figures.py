@@ -55,6 +55,19 @@ class TetrisFigure:
                 by_row[s.row] = s
         return by_row.values()
 
+    def rotate(self):
+        bottom = max(s.row for s in self.squares)
+        center_row = sum(s.row for s in self.squares) // len(self.squares)
+        center_col = sum(s.col for s in self.squares) // len(self.squares)
+        for square in self.squares:
+            relative_row = square.row - center_row
+            relative_col = square.col - center_col
+            square.row = center_row - relative_col
+            square.col = center_col + relative_row
+        while max(s.row for s in self.squares) < bottom:
+            for s in self.squares:
+                s.row += 1
+
 
 class TetrisFugureFactory:
 

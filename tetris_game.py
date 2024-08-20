@@ -33,7 +33,7 @@ while running:
 
     if last_move_time > SPEED_FACTOR:
         last_move_time = 0
-        if not FigureMovement.fall_down(player, grid):
+        if not FigureMovement.move_down(player, grid):
             player = figure_factory.random(4, 0)
             player.add_on_grid(grid)
 
@@ -47,10 +47,9 @@ while running:
             running = False
         if event.type == pygame.KEYDOWN:
             if event.key in [pygame.K_UP, pygame.K_k]:
-                player.rotate()
-                # player.move_up()
+                FigureMovement.rotate(player, grid)
             elif event.key in [pygame.K_DOWN, pygame.K_j]:
-                player.move_down()
+                FigureMovement.fall_down(player, grid)
             elif event.key in [pygame.K_RIGHT, pygame.K_l]:
                 FigureMovement.move_figure_right(player, grid)
             elif event.key in [pygame.K_LEFT, pygame.K_h]:

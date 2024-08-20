@@ -96,7 +96,7 @@ class GamingGrid:
         self.squares.append(square)
         return square
 
-    def has_square_in(self, row, col):
+    def has_square_in(self, col, row):
         for s in self.squares:
             if s.row == row and s.col == col:
                 return True

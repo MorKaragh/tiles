@@ -55,19 +55,6 @@ class TetrisFigure:
                 by_row[s.row] = s
         return by_row.values()
 
-    def rotate(self):
-        bottom = max(s.row for s in self.squares)
-        center_row = sum(s.row for s in self.squares) // len(self.squares)
-        center_col = sum(s.col for s in self.squares) // len(self.squares)
-        for square in self.squares:
-            relative_row = square.row - center_row
-            relative_col = square.col - center_col
-            square.row = center_row - relative_col
-            square.col = center_col + relative_row
-        while max(s.row for s in self.squares) < bottom:
-            for s in self.squares:
-                s.row += 1
-
 
 class TetrisFugureFactory:
 
@@ -162,17 +149,22 @@ class TetrisFugureFactory:
 class FigureMovement:
 
     @staticmethod
-    def fall_down(figure: TetrisFigure, grid: GamingGrid):
+    def move_down(figure: TetrisFigure, grid: GamingGrid):
         for s in figure.get_bottom_border_squares():
-            if s.row == grid.rows - 1 or grid.has_square_in(s.row + 1, s.col):
+            if s.row == grid.rows - 1 or grid.has_square_in(s.col, s.row + 1):
                 return False
         figure.move_down()
         return True
 
     @staticmethod
+    def fall_down(figure: TetrisFigure, grid: GamingGrid):
+        while FigureMovement.move_down(figure, grid):
+            pass
+
+    @staticmethod
     def move_figure_right(figure: TetrisFigure, grid: GamingGrid):
         for s in figure.get_right_border_squares():
-            if s.col == grid.cols - 1 or grid.has_square_in(s.row, s.col + 1):
+            if s.col == grid.cols - 1 or grid.has_square_in(s.col + 1, s.row):
                 return False
         figure.move_right()
         return True
@@ -181,7 +173,30 @@ class FigureMovement:
     def move_figure_left(figure: TetrisFigure, grid: GamingGrid):
         pass
         for s in figure.get_left_border_squares():
-            if s.col == 0 or grid.has_square_in(s.row, s.col - 1):
+            if s.col == 0 or grid.has_square_in(s.col - 1, s.row):
                 return False
         figure.move_left()
         return True
+
+    @staticmethod
+    def rotate(figure: TetrisFigure, grid: GamingGrid):
+        bottom = max(s.row for s in figure.squares)
+        center_row = sum(s.row for s in figure.squares) // len(figure.squares)
+        center_col = sum(s.col for s in figure.squares) // len(figure.squares)
+        new_coords = {}
+        for square in figure.squares:
+            relative_row = square.row - center_row
+            relative_col = square.col - center_col
+            new_row = center_row - relative_col
+            new_col = center_col + relative_row
+            new_coords[(square.col, square.row)] = (new_col, new_row)
+        while max(c[1] for c in new_coords.values()) < bottom:
+            for c in new_coords:
+                new_coords[c] = (new_coords[c][0], new_coords[c][1] + 1)
+        if any([grid.has_square_in(*c) and c not in new_coords
+                for c in new_coords.values()]):
+            return
+        for s in figure.squares:
+            new_coord = new_coords[(s.col, s.row)]
+            s.col = new_coord[0]
+            s.row = new_coord[1]

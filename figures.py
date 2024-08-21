@@ -171,7 +171,6 @@ class FigureMovement:
 
     @staticmethod
     def move_figure_left(figure: TetrisFigure, grid: GamingGrid):
-        pass
         for s in figure.get_left_border_squares():
             if s.col == 0 or grid.has_square_in(s.col - 1, s.row):
                 return False

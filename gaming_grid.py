@@ -117,6 +117,9 @@ class GamingGrid:
 
     def remove_row(self, row: int):
         self.squares = [s for s in self.squares if s.row != row]
+        for s in self.squares:
+            if s.row < row:
+                s.row += 1
 
 
 class GridSolidRow(pygame.Rect):

@@ -49,6 +49,9 @@ class TetrisGame:
         if self.last_fall_time > self.fall_speed_factor:
             self.last_fall_time = 0
             if not self.movements.move_down():
+                for s in self.player.squares:
+                    if self.grid.is_row_full(s.row):
+                        self.grid.remove_row(s.row)
                 self.player = self.figure_factory.random(
                     self.grid.get_center_x(), 0)
                 self.movements.figure = self.player

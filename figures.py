@@ -26,7 +26,8 @@ class TetrisFigure:
                 s.move_down()
 
     def add_on_grid(self, grid: GamingGrid):
-        grid.squares.extend(self.squares)
+        for square in self.squares:
+            grid.add_square(square)
 
     def get_bottom_border_squares(self):
         by_col = {}

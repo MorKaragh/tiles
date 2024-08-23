@@ -26,8 +26,7 @@ class TetrisGame:
         self.figure_factory = TetrisFugureFactory(self.config.GRID_COLS,
                                                   self.config.GRID_ROWS,
                                                   self.config.SQUARE_SIZE)
-        self.player = self.figure_factory.random(
-            self.config.GRID_COLS // 2 - 1, 0)
+        self.player = self.figure_factory.random(self.grid.get_center_x(), 0)
         self.movements = FigureMovement(self.player, self.grid)
         self.player.add_on_grid(self.grid)
         self.running = True
@@ -50,7 +49,8 @@ class TetrisGame:
         if self.last_fall_time > self.fall_speed_factor:
             self.last_fall_time = 0
             if not self.movements.move_down():
-                self.player = self.figure_factory.random(4, 0)
+                self.player = self.figure_factory.random(
+                    self.grid.get_center_x(), 0)
                 self.movements.figure = self.player
                 self.player.add_on_grid(self.grid)
                 self.accelerate_fall = False

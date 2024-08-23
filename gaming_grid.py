@@ -66,15 +66,17 @@ class GamingGrid:
                  rows: int,
                  border_color: str = "Grey",
                  square_width: int = 50):
-        self.squares = []
+        self.squares = [[None] * rows for i in range(cols)]
         self.cols = cols
         self.rows = rows
         self.square_width = square_width
         self.border_color = border_color
 
     def draw(self, screen):
-        for square in self.squares:
-            square.draw(screen)
+        for row in self.squares:
+            for square in row:
+                if square:
+                    square.draw(screen)
         for i in range(0, self.cols + 1):
             pygame.draw.line(screen, self.border_color,
                              (i * self.square_width, 0),
@@ -86,21 +88,33 @@ class GamingGrid:
                              (self.cols * self.square_width,
                               i * self.square_width))
 
-    def add_square(self,
-                   col: int,
-                   row: int,
-                   color: str = "Grey") -> GridSquare:
+    def add_new_square(self,
+                       col: int,
+                       row: int,
+                       color: str = "Grey") -> GridSquare:
         square = GridSquare(col, row,
                             self.cols, self.rows,
                             self.square_width, color)
-        self.squares.append(square)
+        self.squares[col][row] = square
         return square
 
+    def add_square(self, square):
+        self.squares[square.col][square.row] = square
+
     def has_square_in(self, col, row):
-        for s in self.squares:
-            if s.row == row and s.col == col:
-                return True
-        return False
+        if 0 > col > self.cols - 1 or 0 > row > self.rows - 1:
+            return False
+        return self.squares[col][row]
+        # for s in self.squares:
+        #     if s.row == row and s.col == col:
+        #         return True
+        # return False
+
+    def get_center_x(self):
+        return self.cols // 2 - 1
+
+    def is_row_full(row: int):
+        pass
 
 
 class GridSolidRow(pygame.Rect):

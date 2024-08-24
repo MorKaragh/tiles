@@ -1,17 +1,23 @@
 import time
 from dataclasses import dataclass
+from enum import Enum
 from gaming_grid import GamingGrid
 from figures import TetrisFugureFactory, FigureMovement
 
 
 @dataclass
 class GameConfig:
-    GRID_ROWS = 25
-    GRID_COLS = 15
-    SQUARE_SIZE = 40
+    GRID_ROWS = 20
+    GRID_COLS = 10
+    SQUARE_SIZE = 50
     INITIAL_FALL_SPEED_FACTOR = 0.2
     SIDE_MOVE_SPEED_FACTOR = 0.05
     MOVE_DELAY_FACTOR = 6
+
+
+class GameState(Enum):
+    RUNNING = 0
+    LOSS = 1
 
 
 class TetrisGame:
@@ -29,6 +35,7 @@ class TetrisGame:
         self.player = self.figure_factory.random(self.grid.get_center_x(), 0)
         self.movements = FigureMovement(self.player, self.grid)
         self.player.add_on_grid(self.grid)
+        self.state = GameState.RUNNING
         self.running = True
         self.fall_speed_factor = self.config.INITIAL_FALL_SPEED_FACTOR
         self.last_time = time.time()
@@ -49,12 +56,17 @@ class TetrisGame:
         if self.last_fall_time > self.fall_speed_factor:
             self.last_fall_time = 0
             if not self.movements.move_down():
-                for s in self.player.squares:
-                    if self.grid.is_row_full(s.row):
-                        self.grid.remove_row(s.row)
-                self.player = self.figure_factory.random(
-                    self.grid.get_center_x(), 0)
-                self.movements.figure = self.player
-                self.player.add_on_grid(self.grid)
-                self.accelerate_fall = False
-                self.fall_speed_factor = self.config.INITIAL_FALL_SPEED_FACTOR
+                self._process_figure_landing()
+
+    def _process_figure_landing(self):
+        for s in self.player.squares:
+            if self.grid.is_row_full(s.row):
+                self.grid.remove_row(s.row)
+        if self.grid.has_square_in_row(0):
+            self.state = GameState.LOSS
+        self.player = self.figure_factory.random(
+            self.grid.get_center_x(), 0)
+        self.movements.figure = self.player
+        self.player.add_on_grid(self.grid)
+        self.accelerate_fall = False
+        self.fall_speed_factor = self.config.INITIAL_FALL_SPEED_FACTOR

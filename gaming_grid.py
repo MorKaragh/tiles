@@ -105,13 +105,19 @@ class GamingGrid:
                 return True
         return False
 
+    def has_square_in_row(self, row: int):
+        for s in self.squares:
+            if s.row == row:
+                return True
+        return False
+
     def get_center_x(self):
         return self.cols // 2 - 1
 
     def is_row_full(self, row: int):
         indexes = {i for i in range(self.cols)}
         for s in self.squares:
-            if s.row == row:
+            if s.row == row and s.col in indexes:
                 indexes.remove(s.col)
         return len(indexes) == 0
 
@@ -120,6 +126,9 @@ class GamingGrid:
         for s in self.squares:
             if s.row < row:
                 s.row += 1
+
+    def clear(self):
+        self.squares = []
 
 
 class GridSolidRow(pygame.Rect):

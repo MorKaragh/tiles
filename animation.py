@@ -1,8 +1,25 @@
 import pygame
-from gaming_grid import GamingGrid
 from pygame import Surface
 from pathlib import Path
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Callable
+
+
+class AnimationSprites:
+
+    def __init__(self):
+        self.puff_sprites = None
+
+    def get_puff_sprites(self):
+        if self.puff_sprites:
+            return self.puff_sprites
+        puff = Spritesheet("images/puff_anim_yellow.png", (192, 192))
+        sprites = []
+        for i in range(7):
+            for j in range(5):
+                img = pygame.transform.scale(puff.get_sprite((i, j)), (50, 50))
+                sprites.append(img)
+        self.puff_sprites = sprites
+        return self.puff_sprites
 
 
 class PuffAnimation:
@@ -87,7 +104,7 @@ class Animator:
         self.sprites = sprites
         self.coords = coords
 
-    def next(self):
+    def next_frame(self):
         if self.delay < 0:
             self.delay += 1
         else:
@@ -100,28 +117,49 @@ class Animator:
         return self.pointer < len(self.sprites)
 
 
+class AnimationsWithCallback:
+
+    def __init__(self,
+                 animators: List[Animator],
+                 callback: Callable):
+        self.animators = animators
+        self.callback = callback
+
+    def draw(self, screen: Surface):
+        finished = True
+        for a in self.animators:
+            if a.is_active():
+                finished = False
+                screen.blit(a.next_frame(), a.coords)
+        if finished:
+            print("callback")
+            self.callback()
+
+    def is_active(self):
+        return any([a.is_active() for a in self.animators])
+
+
 class AnimationProcessor:
 
     def __init__(self):
         self.animations = []
+        self.sprites = AnimationSprites()
 
     def update(self, screen: Surface):
-        self.animations = [a for a in self.animations if a.is_active()]
+        self.animations = [a for a in self.animations if a is not None and a.is_active()]
         for a in self.animations:
-            screen.blit(a.next(), a.coords)
+            a.draw(screen)
 
     def add_animations(self, animations: List[Animator]):
         self.animations.extend(animations)
 
-
-def row_removal_animation(row: int, grid: GamingGrid):
-    result = []
-    puff = Spritesheet("images/puff_anim_yellow.png", (192, 192))
-    sprites = []
-    for i in range(7):
-        for j in range(5):
-            sprites.append(puff.get_sprite((i, j)))
-    for i in range(grid.cols):
-        result.append(Animator(
-            sprites, (i * grid.square_width, row * grid.square_width)))
-    return result
+    def animate_row_removal(self,
+                            row: int,
+                            callback: Callable = None):
+        print(f"animation {row}")
+        animators = []
+        for i in range(10):
+            animators.append(
+                Animator(self.sprites.get_puff_sprites(), (i * 50, row * 50)))
+        anims = AnimationsWithCallback(animators, callback)
+        self.animations.append(anims)

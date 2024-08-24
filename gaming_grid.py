@@ -1,4 +1,6 @@
 import pygame
+from functools import partial
+from animation import AnimationProcessor
 
 SCREEN_SIZE = 10
 GRID_CELL_SIZE = 20
@@ -65,12 +67,14 @@ class GamingGrid:
                  cols: int,
                  rows: int,
                  border_color: str = "Grey",
-                 square_width: int = 50):
+                 square_width: int = 50,
+                 animation_processor: AnimationProcessor = None):
         self.squares = []
         self.cols = cols
         self.rows = rows
         self.square_width = square_width
         self.border_color = border_color
+        self.animation_processor = animation_processor
 
     def draw(self, screen):
         for square in self.squares:
@@ -122,6 +126,11 @@ class GamingGrid:
         return len(indexes) == 0
 
     def remove_row(self, row: int):
+        self._delete_squares_in_row(row)
+        # callback = partial(self._delete_squares_in_row, row)
+        # self.animation_processor.animate_row_removal(row, callback)
+
+    def _delete_squares_in_row(self, row: int):
         self.squares = [s for s in self.squares if s.row != row]
         for s in self.squares:
             if s.row < row:

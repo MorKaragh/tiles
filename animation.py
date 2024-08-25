@@ -14,7 +14,7 @@ class AnimationSprites:
             return self.puff_sprites
         puff = Spritesheet("images/puff_anim_yellow.png", (192, 192))
         sprites = []
-        for i in range(7):
+        for i in range(4, 7):
             for j in range(5):
                 img = pygame.transform.scale(puff.get_sprite((i, j)), (50, 50))
                 sprites.append(img)

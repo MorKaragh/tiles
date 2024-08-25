@@ -85,14 +85,14 @@ class GamingGrid:
                              (0, i * self.square_width),
                              (self.cols * self.square_width,
                               i * self.square_width))
+        rows_to_kill = set()
         for a in self.animations:
             if a.is_active():
                 screen.blit(a.next_frame(), a.coords)
                 if not a.is_active():
-                    self.remove_square(a.related_object)
-                    for s in self.squares:
-                        if s.col == a.related_object.col and s.row < a.related_object.row:
-                            s.row += 1
+                    rows_to_kill.add(a.related_object.row)
+        for r in rows_to_kill:
+            self._delete_squares_in_row(r)
         self.animations = [a for a in self.animations if a.is_active()]
 
     def add_new_square(self,

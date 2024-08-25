@@ -1,5 +1,4 @@
 import time
-from animation import AnimationProcessor
 from dataclasses import dataclass
 from enum import Enum
 from gaming_grid import GamingGrid
@@ -25,13 +24,11 @@ class TetrisGame:
 
     def __init__(self):
         self.config = GameConfig()
-        self.animation_processor = AnimationProcessor()
         self.grid = GamingGrid(
             self.config.GRID_COLS,
             self.config.GRID_ROWS,
             "Grey",
-            self.config.SQUARE_SIZE,
-            self.animation_processor)
+            self.config.SQUARE_SIZE)
         self.figure_factory = TetrisFugureFactory(self.config.GRID_COLS,
                                                   self.config.GRID_ROWS,
                                                   self.config.SQUARE_SIZE)
@@ -60,8 +57,6 @@ class TetrisGame:
             self.last_fall_time = 0
             if not self.movements.move_down():
                 self._process_figure_landing()
-
-        self.animation_processor.update(screen)
 
     def _process_figure_landing(self):
         for s in self.player.squares:

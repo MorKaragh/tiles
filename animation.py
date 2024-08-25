@@ -1,7 +1,7 @@
 import pygame
 from pygame import Surface
 from pathlib import Path
-from typing import List, Tuple, Union, Callable
+from typing import List, Tuple, Union
 
 
 class AnimationSprites:
@@ -20,13 +20,6 @@ class AnimationSprites:
                 sprites.append(img)
         self.puff_sprites = sprites
         return self.puff_sprites
-
-
-class PuffAnimation:
-
-    def __init__(self):
-        spritesheet = pygame.image.load("images/puff_anim_yellow.png")
-        spritesheet.get_rect()
 
 
 class Spritesheet:
@@ -117,49 +110,10 @@ class Animator:
         return self.pointer < len(self.sprites)
 
 
-class AnimationsWithCallback:
-
-    def __init__(self,
-                 animators: List[Animator],
-                 callback: Callable):
-        self.animators = animators
-        self.callback = callback
-
-    def draw(self, screen: Surface):
-        finished = True
-        for a in self.animators:
-            if a.is_active():
-                finished = False
-                screen.blit(a.next_frame(), a.coords)
-        if finished:
-            print("callback")
-            self.callback()
-
-    def is_active(self):
-        return any([a.is_active() for a in self.animators])
-
-
-class AnimationProcessor:
+class AnimatorFactory:
 
     def __init__(self):
-        self.animations = []
         self.sprites = AnimationSprites()
 
-    def update(self, screen: Surface):
-        self.animations = [a for a in self.animations if a is not None and a.is_active()]
-        for a in self.animations:
-            a.draw(screen)
-
-    def add_animations(self, animations: List[Animator]):
-        self.animations.extend(animations)
-
-    def animate_row_removal(self,
-                            row: int,
-                            callback: Callable = None):
-        print(f"animation {row}")
-        animators = []
-        for i in range(10):
-            animators.append(
-                Animator(self.sprites.get_puff_sprites(), (i * 50, row * 50)))
-        anims = AnimationsWithCallback(animators, callback)
-        self.animations.append(anims)
+    def get_square_puff(self, coords: Tuple[int, int], delay: int = 0):
+        return Animator(self.sprites.get_puff_sprites(), coords, delay)

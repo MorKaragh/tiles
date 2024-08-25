@@ -1,9 +1,5 @@
 import pygame
-from functools import partial
-from animation import AnimationProcessor
-
-SCREEN_SIZE = 10
-GRID_CELL_SIZE = 20
+from animation import AnimatorFactory
 
 
 class GridSquare(pygame.Rect):
@@ -67,14 +63,14 @@ class GamingGrid:
                  cols: int,
                  rows: int,
                  border_color: str = "Grey",
-                 square_width: int = 50,
-                 animation_processor: AnimationProcessor = None):
+                 square_width: int = 50):
         self.squares = []
+        self.animations = []
         self.cols = cols
         self.rows = rows
         self.square_width = square_width
         self.border_color = border_color
-        self.animation_processor = animation_processor
+        self.animator_factory = AnimatorFactory()
 
     def draw(self, screen):
         for square in self.squares:
@@ -89,6 +85,15 @@ class GamingGrid:
                              (0, i * self.square_width),
                              (self.cols * self.square_width,
                               i * self.square_width))
+        for a in self.animations:
+            if a.is_active():
+                screen.blit(a.next_frame(), a.coords)
+                if not a.is_active():
+                    self.remove_square(a.related_object)
+                    for s in self.squares:
+                        if s.col == a.related_object.col and s.row < a.related_object.row:
+                            s.row += 1
+        self.animations = [a for a in self.animations if a.is_active()]
 
     def add_new_square(self,
                        col: int,
@@ -103,11 +108,21 @@ class GamingGrid:
     def add_square(self, square):
         self.squares.append(square)
 
+    def remove_square(self, square):
+        print(square)
+        self.squares = [s for s in self.squares if s != square]
+
     def has_square_in(self, col, row):
         for s in self.squares:
             if s.col == col and s.row == row:
                 return True
         return False
+
+    def get_square_in(self, col, row):
+        for s in self.squares:
+            if s.col == col and s.row == row:
+                return s
+        return None
 
     def has_square_in_row(self, row: int):
         for s in self.squares:
@@ -126,9 +141,12 @@ class GamingGrid:
         return len(indexes) == 0
 
     def remove_row(self, row: int):
-        self._delete_squares_in_row(row)
-        # callback = partial(self._delete_squares_in_row, row)
-        # self.animation_processor.animate_row_removal(row, callback)
+        for i in range(self.cols):
+            coords = (i * self.square_width, self.square_width * row)
+            anim = self.animator_factory.get_square_puff(coords)
+            anim.related_object = self.get_square_in(i, row)
+            self.animations.append(anim)
+        # self._delete_squares_in_row(row)
 
     def _delete_squares_in_row(self, row: int):
         self.squares = [s for s in self.squares if s.row != row]
@@ -138,13 +156,3 @@ class GamingGrid:
 
     def clear(self):
         self.squares = []
-
-
-class GridSolidRow(pygame.Rect):
-
-    def __init__(self, y, color="Green"):
-        pygame.Rect.__init__(self, 0, y, SCREEN_SIZE, GRID_CELL_SIZE)
-        self.color = color
-
-    def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self)

@@ -144,6 +144,10 @@ class GamingGrid:
                 indexes.remove(s.col)
         return len(indexes) == 0
 
+    def remove_rows(self, rows):
+        for row in rows:
+            self.remove_row(row)
+
     def remove_row(self, row: int):
         for i in range(self.cols):
             coords = (i * self.square_width, self.square_width * row)

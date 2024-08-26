@@ -67,11 +67,11 @@ class TetrisGame:
         full_rows = set()
         for s in self.player.squares:
             if self.grid.is_row_full(s.row):
-                print(f"row {s.row} is full")
                 full_rows.add(s.row)
-        print(full_rows)
-        for full_row in full_rows:
-            self.grid.remove_row(full_row)
+        self.grid.remove_rows(full_rows)
+        # for full_row in full_rows:
+        #     self.grid.remove_row(full_row)
+        #     self.grid._delete_squares_in_row(full_row)
         if self.grid.has_square_in_row(0):
             self.state = GameState.LOSS
         self.player = self.figure_factory.random(

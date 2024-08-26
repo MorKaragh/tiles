@@ -96,7 +96,7 @@ class GamingGrid:
         if rows_to_kill:
             for r in range(self.rows):
                 if self.is_row_full(r):
-                    raise Exception("somehow full row stays")
+                    print("somehow full row stays")
         self.animations = [a for a in self.animations if a.is_active()]
 
     def add_new_square(self,

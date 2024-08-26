@@ -1,4 +1,6 @@
 import time
+import io
+import pickle
 from dataclasses import dataclass
 from enum import Enum
 from gaming_grid import GamingGrid
@@ -18,12 +20,13 @@ class GameConfig:
 class GameState(Enum):
     RUNNING = 0
     LOSS = 1
+    PAUSE = 2
 
 
 class TetrisGame:
 
-    def __init__(self):
-        self.config = GameConfig()
+    def __init__(self, config: GameConfig):
+        self.config = config
         self.grid = GamingGrid(
             self.config.GRID_COLS,
             self.config.GRID_ROWS,
@@ -32,7 +35,7 @@ class TetrisGame:
         self.figure_factory = TetrisFugureFactory(self.config.GRID_COLS,
                                                   self.config.GRID_ROWS,
                                                   self.config.SQUARE_SIZE)
-        self.player = self.figure_factory.random(self.grid.get_center_x(), 0)
+        self.player = self.figure_factory.line(self.grid.get_center_x(), 0)
         self.movements = FigureMovement(self.player, self.grid)
         self.player.add_on_grid(self.grid)
         self.state = GameState.RUNNING
@@ -61,6 +64,8 @@ class TetrisGame:
     def _process_figure_landing(self):
         for s in self.player.squares:
             if self.grid.is_row_full(s.row):
+                print(f"row {s.row} is full")
+                # self.grid._delete_squares_in_row(s.row)
                 self.grid.remove_row(s.row)
         if self.grid.has_square_in_row(0):
             self.state = GameState.LOSS
@@ -70,3 +75,8 @@ class TetrisGame:
         self.player.add_on_grid(self.grid)
         self.accelerate_fall = False
         self.fall_speed_factor = self.config.INITIAL_FALL_SPEED_FACTOR
+
+    def serialize(self):
+        byte_stream = io.BytesIO()
+        pickle.dump(self, byte_stream)
+        return byte_stream.getvalue().decode('latin-1')

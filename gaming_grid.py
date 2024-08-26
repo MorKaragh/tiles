@@ -93,6 +93,10 @@ class GamingGrid:
                     rows_to_kill.add(a.related_object.row)
         for r in rows_to_kill:
             self._delete_squares_in_row(r)
+        if rows_to_kill:
+            for r in range(self.rows):
+                if self.is_row_full(r):
+                    raise Exception("somehow full row stays")
         self.animations = [a for a in self.animations if a.is_active()]
 
     def add_new_square(self,
@@ -146,7 +150,6 @@ class GamingGrid:
             anim = self.animator_factory.get_square_puff(coords)
             anim.related_object = self.get_square_in(i, row)
             self.animations.append(anim)
-        # self._delete_squares_in_row(row)
 
     def _delete_squares_in_row(self, row: int):
         self.squares = [s for s in self.squares if s.row != row]
@@ -156,3 +159,12 @@ class GamingGrid:
 
     def clear(self):
         self.squares = []
+
+    def __repr__(self):
+        return ";".join([f"{s.col}:{s.row}" for s in self.squares])
+
+    def set_state(self, state: str):
+        self.clear()
+        for coord in state.split(";"):
+            x, y = coord.split(":")
+            self.add_new_square(int(x), int(y), "Black")

@@ -1,12 +1,16 @@
 import pygame
+from utils import get_grid_state_logger
 from game import TetrisGame, GameConfig, GameState
 from gui import StateScreen
 from input_control import process_events, process_pressed_keys
 
+state_logger = get_grid_state_logger()
+DEBUG = True
+
 clock = pygame.time.Clock()
 
 config = GameConfig()
-game = TetrisGame()
+game = TetrisGame(config)
 pygame.init()
 screen = pygame.display.set_mode((config.GRID_COLS * config.SQUARE_SIZE,
                                   config.GRID_ROWS * config.SQUARE_SIZE))
@@ -20,6 +24,10 @@ while game.running:
 
     if game.state == GameState.RUNNING:
         game.update(screen)
+        game.grid.draw(screen)
+        if DEBUG:
+            state_logger.info(game.grid.__repr__())
+    elif game.state == GameState.PAUSE:
         game.grid.draw(screen)
     elif game.state == GameState.LOSS:
         StateScreen.draw_loss(screen)

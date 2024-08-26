@@ -1,4 +1,5 @@
 import pygame
+from game import GameState
 
 
 def process_pressed_keys(pressed, game, config):
@@ -29,6 +30,11 @@ def process_events(events, game, config):
             elif event.key in [pygame.K_LEFT, pygame.K_h]:
                 game.side_move_delay = -7
                 game.movements.move_figure_left()
+            elif event.key == pygame.K_SPACE:
+                if game.state == GameState.PAUSE:
+                    game.state = GameState.RUNNING
+                else:
+                    game.state = GameState.PAUSE
         elif event.type == pygame.KEYUP:
             if event.key in [pygame.K_DOWN, pygame.K_j]:
                 game.accelerate_fall = False

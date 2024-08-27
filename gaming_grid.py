@@ -1,5 +1,7 @@
 import pygame
-from animation import AnimatorFactory
+from pygame import Surface
+from typing import List, Iterable
+from animation import AnimatorFactory, Animator
 
 
 class GridSquare(pygame.Rect):
@@ -57,6 +59,25 @@ class GridSquare(pygame.Rect):
         pygame.draw.rect(screen, self.color, self)
 
 
+class RowRemovalAnimation:
+
+    def __init__(self, rows: List[int], animations: Iterable[Animator]):
+        self.rows = sorted(rows)
+        self.animations = animations
+        self.active = True
+
+    def draw(self, screen: Surface):
+        if not self.active:
+            return
+        played_anim = False
+        for a in self.animations:
+            if a.is_active():
+                screen.blit(a.next_frame(), a.coords)
+                played_anim = True
+        if not played_anim:
+            self.active = False
+
+
 class GamingGrid:
 
     def __init__(self,
@@ -65,12 +86,12 @@ class GamingGrid:
                  border_color: str = "Grey",
                  square_width: int = 50):
         self.squares = []
-        self.animations = []
         self.cols = cols
         self.rows = rows
         self.square_width = square_width
         self.border_color = border_color
         self.animator_factory = AnimatorFactory()
+        self.rows_removal_anim = None
 
     def draw(self, screen):
         for square in self.squares:
@@ -85,19 +106,12 @@ class GamingGrid:
                              (0, i * self.square_width),
                              (self.cols * self.square_width,
                               i * self.square_width))
-        rows_to_kill = set()
-        for a in self.animations:
-            if a.is_active():
-                screen.blit(a.next_frame(), a.coords)
-                if not a.is_active():
-                    rows_to_kill.add(a.related_object.row)
-        for r in rows_to_kill:
-            self._delete_squares_in_row(r)
-        if rows_to_kill:
-            for r in range(self.rows):
-                if self.is_row_full(r):
-                    print("somehow full row stays")
-        self.animations = [a for a in self.animations if a.is_active()]
+        if self.rows_removal_anim:
+            self.rows_removal_anim.draw(screen)
+            if not self.rows_removal_anim.active:
+                for row in self.rows_removal_anim.rows:
+                    self._delete_squares_in_row(row)
+                self.rows_removal_anim = None
 
     def add_new_square(self,
                        col: int,
@@ -113,7 +127,6 @@ class GamingGrid:
         self.squares.append(square)
 
     def remove_square(self, square):
-        print(square)
         self.squares = [s for s in self.squares if s != square]
 
     def has_square_in(self, col, row):
@@ -145,15 +158,21 @@ class GamingGrid:
         return len(indexes) == 0
 
     def remove_rows(self, rows):
+        animations = []
         for row in rows:
-            self.remove_row(row)
+            for i in range(self.cols):
+                coords = (i * self.square_width, self.square_width * row)
+                anim = self.animator_factory.get_square_puff(coords)
+                anim.related_object = self.get_square_in(i, row)
+                animations.append(anim)
+        self.rows_removal_anim = RowRemovalAnimation(rows, animations)
 
     def remove_row(self, row: int):
         for i in range(self.cols):
             coords = (i * self.square_width, self.square_width * row)
             anim = self.animator_factory.get_square_puff(coords)
             anim.related_object = self.get_square_in(i, row)
-            self.animations.append(anim)
+            self.rows_removal_anim.append(anim)
 
     def _delete_squares_in_row(self, row: int):
         self.squares = [s for s in self.squares if s.row != row]

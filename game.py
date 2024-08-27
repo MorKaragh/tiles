@@ -33,7 +33,7 @@ class TetrisGame:
             self.config.GRID_ROWS,
             "Grey",
             self.config.SQUARE_SIZE)
-        presets.fill_bug_1(self.grid)
+        # presets.fill_bug_1(self.grid)
         self.figure_factory = TetrisFugureFactory(self.config.GRID_COLS,
                                                   self.config.GRID_ROWS,
                                                   self.config.SQUARE_SIZE)
@@ -69,9 +69,6 @@ class TetrisGame:
             if self.grid.is_row_full(s.row):
                 full_rows.add(s.row)
         self.grid.remove_rows(full_rows)
-        # for full_row in full_rows:
-        #     self.grid.remove_row(full_row)
-        #     self.grid._delete_squares_in_row(full_row)
         if self.grid.has_square_in_row(0):
             self.state = GameState.LOSS
         self.player = self.figure_factory.random(

@@ -1,5 +1,5 @@
 import pygame
-from game import GameState
+from game import GameState, TetrisGame, GameConfig
 
 
 def process_pressed_keys(pressed, game, config):
@@ -14,7 +14,7 @@ def process_pressed_keys(pressed, game, config):
         game.fall_speed_factor = 0
 
 
-def process_events(events, game, config):
+def process_events(events, game: TetrisGame, config: GameConfig):
     for event in events:
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -33,6 +33,8 @@ def process_events(events, game, config):
             elif event.key == pygame.K_SPACE:
                 if game.state == GameState.PAUSE:
                     game.state = GameState.RUNNING
+                elif game.state == GameState.LOSS:
+                    game.reset()
                 else:
                     game.state = GameState.PAUSE
         elif event.type == pygame.KEYUP:

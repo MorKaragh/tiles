@@ -33,11 +33,11 @@ class TetrisGame:
             self.config.GRID_ROWS,
             "Grey",
             self.config.SQUARE_SIZE)
-        # presets.fill_bug_1(self.grid)
+        presets.fill_tunnel(self.grid)
         self.figure_factory = TetrisFugureFactory(self.config.GRID_COLS,
                                                   self.config.GRID_ROWS,
                                                   self.config.SQUARE_SIZE)
-        self.player = self.figure_factory.T(self.grid.get_center_x(), 0)
+        self.player = self.figure_factory.random(self.grid.get_center_x(), 0)
         self.movements = FigureMovement(self.player, self.grid)
         self.player.add_on_grid(self.grid)
         self.state = GameState.RUNNING
@@ -62,6 +62,14 @@ class TetrisGame:
             self.last_fall_time = 0
             if not self.movements.move_down():
                 self._process_figure_landing()
+
+    def reset(self):
+        self.grid.clear()
+        self.player = self.figure_factory.random(self.grid.get_center_x(), 0)
+        self.movements = FigureMovement(self.player, self.grid)
+        self.player.add_on_grid(self.grid)
+        self.state = GameState.RUNNING
+        self.running = True
 
     def _process_figure_landing(self):
         full_rows = set()

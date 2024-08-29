@@ -2,6 +2,7 @@ import time
 import io
 import pickle
 import presets
+from effects import SoundEffects
 from dataclasses import dataclass
 from enum import Enum
 from gaming_grid import GamingGrid
@@ -28,6 +29,7 @@ class TetrisGame:
 
     def __init__(self, config: GameConfig):
         self.config = config
+        self.effects = SoundEffects()
         self.grid = GamingGrid(
             self.config.GRID_COLS,
             self.config.GRID_ROWS,
@@ -36,7 +38,7 @@ class TetrisGame:
         self.figure_factory = TetrisFugureFactory(self.config.GRID_COLS,
                                                   self.config.GRID_ROWS,
                                                   self.config.SQUARE_SIZE)
-        self.player = self.figure_factory.brick(self.grid.get_center_x(), 0)
+        self.player = self.figure_factory.random(self.grid.get_center_x(), 0)
         self.movements = FigureMovement(self.player, self.grid)
         self.player.add_on_grid(self.grid)
         self.state = GameState.RUNNING
@@ -75,7 +77,11 @@ class TetrisGame:
         for s in self.player.squares:
             if self.grid.is_row_full(s.row):
                 full_rows.add(s.row)
-        self.grid.remove_rows(full_rows)
+        if full_rows:
+            self.grid.remove_rows(full_rows)
+            self.effects.puff()
+        else:
+            self.effects.touch()
         if self.grid.has_square_in_row(0):
             self.state = GameState.LOSS
         self.player = self.figure_factory.random(

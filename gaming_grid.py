@@ -4,6 +4,20 @@ from typing import List, Iterable
 from animation import AnimatorFactory, Animator
 
 
+class SquareImage:
+    def __init__(self):
+        self.red = self.load_img("images/red.png")
+        self.pink = self.load_img("images/pink.png")
+        self.green = self.load_img("images/green.png")
+        self.blue = self.load_img("images/blue.png")
+        self.violet = self.load_img("images/violet.png")
+        self.yellow = self.load_img("images/yellow.png")
+
+    def load_img(self, path: str):
+        img = pygame.image.load(path).convert_alpha()
+        return pygame.transform.scale(img, (50, 50))
+
+
 class GridSquare(pygame.Rect):
 
     def __init__(self,
@@ -12,13 +26,15 @@ class GridSquare(pygame.Rect):
                  col_max: int,
                  row_max: int,
                  sizepx: int = 50,
-                 color="Black"):
+                 color: str = "Black",
+                 image: Surface = None):
         self.col = col
         self.row = row
         self.col_max = col_max
         self.row_max = row_max
         self.sizepx = sizepx
         self.color = color
+        self.image = image
         pygame.Rect.__init__(self,
                              self.sizepx * self.col,
                              self.sizepx * self.row,
@@ -53,10 +69,16 @@ class GridSquare(pygame.Rect):
     def has_space_down(self, step: int = 1):
         return self.row + step < self.row_max
 
-    def draw(self, screen):
+    def draw(self, screen: Surface):
         self.x = self.col * self.sizepx
         self.y = self.row * self.sizepx
-        pygame.draw.rect(screen, self.color, self)
+        if self.image:
+            img_rect = self.image.get_rect()
+            img_rect.x = self.x
+            img_rect.y = self.y
+            screen.blit(self.image, self)
+        else:
+            pygame.draw.rect(screen, self.color, self)
 
 
 class RowRemovalAnimation:
@@ -83,7 +105,7 @@ class GamingGrid:
     def __init__(self,
                  cols: int,
                  rows: int,
-                 border_color: str = "Grey",
+                 border_color: str = "Black",
                  square_width: int = 50):
         self.squares = []
         self.cols = cols

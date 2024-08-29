@@ -31,13 +31,12 @@ class TetrisGame:
         self.grid = GamingGrid(
             self.config.GRID_COLS,
             self.config.GRID_ROWS,
-            "Grey",
+            "Black",
             self.config.SQUARE_SIZE)
-        presets.fill_tunnel(self.grid)
         self.figure_factory = TetrisFugureFactory(self.config.GRID_COLS,
                                                   self.config.GRID_ROWS,
                                                   self.config.SQUARE_SIZE)
-        self.player = self.figure_factory.random(self.grid.get_center_x(), 0)
+        self.player = self.figure_factory.brick(self.grid.get_center_x(), 0)
         self.movements = FigureMovement(self.player, self.grid)
         self.player.add_on_grid(self.grid)
         self.state = GameState.RUNNING

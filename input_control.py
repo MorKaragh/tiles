@@ -7,9 +7,9 @@ def process_pressed_keys(pressed, game, config):
             and game.side_move_delay > 0):
         game.last_move_time = 0
         if pressed[pygame.K_RIGHT]:
-            game.movements.move_figure_right()
+            game.movements.move_right()
         elif pressed[pygame.K_LEFT]:
-            game.movements.move_figure_left()
+            game.movements.move_left()
     if pressed[pygame.K_DOWN] and game.accelerate_fall:
         game.fall_speed_factor = 0
 
@@ -26,10 +26,10 @@ def process_events(events, game: TetrisGame, config: GameConfig):
                 game.accelerate_fall = True
             elif event.key in [pygame.K_RIGHT, pygame.K_l]:
                 game.side_move_delay = -7
-                game.movements.move_figure_right()
+                game.movements.move_right()
             elif event.key in [pygame.K_LEFT, pygame.K_h]:
                 game.side_move_delay = -7
-                game.movements.move_figure_left()
+                game.movements.move_left()
             elif event.key == pygame.K_SPACE:
                 if game.state == GameState.PAUSE:
                     game.state = GameState.RUNNING

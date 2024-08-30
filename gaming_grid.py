@@ -5,7 +5,8 @@ from animation import AnimatorFactory, Animator
 
 
 class SquareImages:
-    def __init__(self):
+    def __init__(self, square_size_px: int):
+        self.square_size_px = square_size_px
         self.red = self.load_img("images/red.png")
         self.pink = self.load_img("images/pink.png")
         self.green = self.load_img("images/green.png")
@@ -16,7 +17,8 @@ class SquareImages:
 
     def load_img(self, path: str):
         img = pygame.image.load(path).convert_alpha()
-        return pygame.transform.scale(img, (50, 50))
+        return pygame.transform.scale(img, (self.square_size_px,
+                                            self.square_size_px))
 
 
 class GridSquare(pygame.Rect):
@@ -74,9 +76,6 @@ class GridSquare(pygame.Rect):
         self.x = self.col * self.sizepx
         self.y = self.row * self.sizepx
         if self.image:
-            img_rect = self.image.get_rect()
-            img_rect.x = self.x
-            img_rect.y = self.y
             screen.blit(self.image, self)
         else:
             pygame.draw.rect(screen, self.color, self)
@@ -107,18 +106,23 @@ class GamingGrid:
                  cols: int,
                  rows: int,
                  border_color: str = "Black",
-                 square_width: int = 50):
+                 square_width: int = 50,
+                 animations: AnimatorFactory = None):
         self.squares = []
         self.cols = cols
         self.rows = rows
         self.square_width = square_width
         self.border_color = border_color
-        self.animator_factory = AnimatorFactory()
+        self.animator_factory = animations
         self.rows_removal_anim = None
 
     def draw(self, screen):
         for square in self.squares:
             square.draw(screen)
+        self._draw_grid_skel(screen)
+        self._process_animations(screen)
+
+    def _draw_grid_skel(self, screen):
         for i in range(0, self.cols + 1):
             pygame.draw.line(screen, self.border_color,
                              (i * self.square_width, 0),
@@ -129,6 +133,8 @@ class GamingGrid:
                              (0, i * self.square_width),
                              (self.cols * self.square_width,
                               i * self.square_width))
+
+    def _process_animations(self, screen):
         if self.rows_removal_anim:
             self.rows_removal_anim.draw(screen)
             if not self.rows_removal_anim.active:

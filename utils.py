@@ -1,4 +1,6 @@
 import logging
+import pygame
+from typing import Tuple
 
 
 def get_grid_state_logger():
@@ -9,3 +11,8 @@ def get_grid_state_logger():
     logger.addHandler(file_handler)
     logger.setLevel(logging.INFO)
     return logger
+
+
+def load_img(path: str, size: Tuple[int, int]):
+    img = pygame.image.load(path).convert_alpha()
+    return pygame.transform.scale(img, size)

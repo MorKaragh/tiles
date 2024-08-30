@@ -62,7 +62,7 @@ class TetrisFugureFactory:
         self.col_max = col_max
         self.row_max = row_max
         self.square_size = square_size
-        self.images = SquareImages()
+        self.images = SquareImages(square_size)
 
     def random(self, col: int, row: int) -> TetrisFigure:
         funcs = [self.brick, self.L, self.J, self.T, self.S, self.Z, self.line]

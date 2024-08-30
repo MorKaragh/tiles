@@ -13,4 +13,3 @@ class SoundEffects:
 
     def puff(self):
         self.puff_snd.play()
-

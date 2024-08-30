@@ -2,6 +2,26 @@ import pygame
 from pygame import Surface
 from pathlib import Path
 from typing import List, Tuple, Union
+from utils import load_img
+
+
+class CyclingAnimation:
+
+    def __init__(self, frames: List, frame_change_rate: int = 1):
+        self.frames = frames
+        self.frame_counter = 0
+        self.change_counter = 0
+        self.change_rate = frame_change_rate
+
+    def next_frame(self) -> Surface:
+        if self.change_counter == self.change_rate:
+            self.change_counter = 0
+            self.frame_counter += 1
+            if self.frame_counter == len(self.frames):
+                self.frame_counter = 0
+        else:
+            self.change_counter += 1
+        return self.frames[self.frame_counter]
 
 
 class AnimationSprites:
@@ -9,7 +29,7 @@ class AnimationSprites:
     def __init__(self):
         self.puff_sprites = None
 
-    def get_puff_sprites(self):
+    def get_puff_sprites(self) -> List[Surface]:
         if self.puff_sprites:
             return self.puff_sprites
         puff = Spritesheet("images/puff_anim_yellow.png", (192, 192))
@@ -20,6 +40,13 @@ class AnimationSprites:
                 sprites.append(img)
         self.puff_sprites = sprites
         return self.puff_sprites
+
+    def get_gold_frame_sprites(self, width: int = 200) -> List[Surface]:
+        frames = []
+        for i in range(1, 10):
+            frames.append(
+                load_img(f"images/frame/glow_frame{i}.png", (width, width)))
+        return frames
 
 
 class Spritesheet:
@@ -117,3 +144,6 @@ class AnimatorFactory:
 
     def get_square_puff(self, coords: Tuple[int, int], delay: int = 0):
         return Animator(self.sprites.get_puff_sprites(), coords, delay)
+
+    def get_gold_frame_amin(self, width: int):
+        return CyclingAnimation(self.sprites.get_gold_frame_sprites(width), 5)

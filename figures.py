@@ -205,7 +205,17 @@ class FigureMovement:
         return True
 
     def rotate(self):
-        bottom = max(s.row for s in self.figure.squares)
+        new_coords = self._coords_after_rotation()
+        self._prevent_moving_up_after_rotation(new_coords)
+        self._rotation_wall_bump(new_coords)
+        if self._intersects_with_other_squares(new_coords):
+            return
+        for s in self.figure.squares:
+            new_coord = new_coords[(s.col, s.row)]
+            s.col = new_coord[0]
+            s.row = new_coord[1]
+
+    def _coords_after_rotation(self):
         center_row = sum(
             s.row for s in self.figure.squares) // len(self.figure.squares)
         center_col = sum(
@@ -217,19 +227,22 @@ class FigureMovement:
             new_row = center_row - relative_col
             new_col = center_col + relative_row
             new_coords[(square.col, square.row)] = (new_col, new_row)
+        return new_coords
+
+    def _prevent_moving_up_after_rotation(self, new_coords):
+        bottom = max(s.row for s in self.figure.squares)
         while max(c[1] for c in new_coords.values()) < bottom:
             for c in new_coords:
                 new_coords[c] = (new_coords[c][0], new_coords[c][1] + 1)
-        if any(self.grid.has_square_in(*c) and c not in new_coords
-                for c in new_coords.values()):
-            return
+
+    def _rotation_wall_bump(self, new_coords):
         while any(c[0] < 0 for c in new_coords.values()):
             for c in new_coords:
                 new_coords[c] = (new_coords[c][0] + 1, new_coords[c][1])
         while any(c[0] > self.grid.cols - 1 for c in new_coords.values()):
             for c in new_coords:
                 new_coords[c] = (new_coords[c][0] - 1, new_coords[c][1])
-        for s in self.figure.squares:
-            new_coord = new_coords[(s.col, s.row)]
-            s.col = new_coord[0]
-            s.row = new_coord[1]
+
+    def _intersects_with_other_squares(self, new_coords):
+        return any(self.grid.has_square_in(*c) and c not in new_coords
+                   for c in new_coords.values())

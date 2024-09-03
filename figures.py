@@ -1,15 +1,28 @@
 import random
+from enum import Enum
 from pygame import Surface
 from gaming_grid import GridSquare, GamingGrid, SquareImages
 from typing import List
+
+
+class FigureType(Enum):
+    LINE = "LINE"
+    BRICK = "BRICK"
+    T = "T"
+    L = "L"
+    J = "J"
+    Z = "Z"
+    S = "S"
 
 
 class TetrisFigure:
 
     def __init__(self,
                  squares: List[GridSquare],
+                 figure_type: FigureType,
                  is_falling: bool = True):
         self.squares = squares
+        self.figure_type = figure_type
 
     def move_right(self):
         if all([s.has_space_right() for s in self.squares]):
@@ -56,12 +69,6 @@ class TetrisFigure:
                 by_row[s.row] = s
         return by_row.values()
 
-    def get_example(self, square_size: int):
-        surface = Surface((0, 0))
-        for s in self.squares:
-            surface.blit(s.image, (s.col * square_size, s.row * square_size))
-        return surface
-
 
 class TetrisFugureFactory:
 
@@ -71,10 +78,27 @@ class TetrisFugureFactory:
         self.square_size = square_size
         self.images = SquareImages(square_size)
 
-    def random(self, col: int, row: int) -> TetrisFigure:
+    def random(self, col: int = 0, row: int = 0) -> TetrisFigure:
         funcs = [self.brick, self.L, self.J, self.T, self.S, self.Z, self.line]
         choise = random.choice(funcs)
         return choise(col, row)
+
+    def produce_by_type(self, col: int, row: int, figure_type: FigureType):
+        match figure_type:
+            case FigureType.LINE:
+                return self.line(col, row)
+            case FigureType.BRICK:
+                return self.brick(col, row)
+            case FigureType.L:
+                return self.L(col, row)
+            case FigureType.J:
+                return self.J(col, row)
+            case FigureType.Z:
+                return self.Z(col, row)
+            case FigureType.S:
+                return self.S(col, row)
+            case FigureType.T:
+                return self.T(col, row)
 
     def brick(self, col: int, row: int) -> TetrisFigure:
         squares = [GridSquare(col, row, self.col_max,
@@ -89,7 +113,7 @@ class TetrisFugureFactory:
                    GridSquare(col + 1, row + 1, self.col_max,
                               self.row_max, self.square_size,
                               image=self.images.yellow)]
-        return TetrisFigure(squares)
+        return TetrisFigure(squares, FigureType.BRICK)
 
     def L(self, col: int, row: int) -> TetrisFigure:
         squares = [GridSquare(col, row, self.col_max,
@@ -104,7 +128,7 @@ class TetrisFugureFactory:
                    GridSquare(col + 1, row + 2, self.col_max,
                               self.row_max, self.square_size,
                               image=self.images.red)]
-        return TetrisFigure(squares)
+        return TetrisFigure(squares, FigureType.L)
 
     def J(self, col: int, row: int) -> TetrisFigure:
         squares = [GridSquare(col, row, self.col_max, self.row_max,
@@ -119,7 +143,7 @@ class TetrisFugureFactory:
                    GridSquare(col - 1, row + 2, self.col_max, self.row_max,
                               self.square_size,
                               image=self.images.bluer)]
-        return TetrisFigure(squares)
+        return TetrisFigure(squares, FigureType.J)
 
     def S(self, col: int, row: int) -> TetrisFigure:
         squares = [GridSquare(col, row, self.col_max, self.row_max,
@@ -134,7 +158,7 @@ class TetrisFugureFactory:
                    GridSquare(col + 2, row + 1, self.col_max, self.row_max,
                               self.square_size,
                               image=self.images.green)]
-        return TetrisFigure(squares)
+        return TetrisFigure(squares, FigureType.S)
 
     def Z(self, col: int, row: int) -> TetrisFigure:
         squares = [GridSquare(col + 1, row, self.col_max, self.row_max,
@@ -149,7 +173,7 @@ class TetrisFugureFactory:
                    GridSquare(col + 1, row + 1, self.col_max, self.row_max,
                               self.square_size,
                               image=self.images.pink)]
-        return TetrisFigure(squares)
+        return TetrisFigure(squares, FigureType.Z)
 
     def T(self, col: int, row: int) -> TetrisFigure:
         squares = [GridSquare(col + 1, row, self.col_max, self.row_max,
@@ -164,7 +188,7 @@ class TetrisFugureFactory:
                    GridSquare(col + 1, row + 1, self.col_max, self.row_max,
                               self.square_size,
                               image=self.images.violet)]
-        return TetrisFigure(squares)
+        return TetrisFigure(squares, FigureType.T)
 
     def line(self, col: int, row: int) -> TetrisFigure:
         squares = [GridSquare(col + 1, row, self.col_max, self.row_max,
@@ -179,7 +203,7 @@ class TetrisFugureFactory:
                    GridSquare(col + 3, row, self.col_max, self.row_max,
                               self.square_size,
                               image=self.images.blue)]
-        return TetrisFigure(squares)
+        return TetrisFigure(squares, FigureType.LINE)
 
 
 class FigureMovement:

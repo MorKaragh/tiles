@@ -31,6 +31,8 @@ class TetrisGame:
                                                   self.config.SQUARE_SIZE)
         self.scoreboard = ScoreBoard(self.config, self.animations)
         self.player = self.figure_factory.random(self.grid.get_center_x(), 0)
+        self.next_player = self.figure_factory.random()
+        self.scoreboard.set_next_figure(self.next_player)
         self.movements = FigureMovement(self.player, self.grid)
         self.player.add_on_grid(self.grid)
         self.state = GameState.RUNNING
@@ -47,7 +49,6 @@ class TetrisGame:
         self.last_fall_time = self.last_fall_time + time_gap
         self.last_move_time = self.last_move_time + time_gap
         self.last_time = time.time()
-        self.scoreboard.body.blit(self.player.get_example(10), (0, 0))
 
         if self.side_move_delay <= 0:
             self.side_move_delay += self.last_move_time
@@ -77,8 +78,10 @@ class TetrisGame:
             self.effects.touch()
         if self.grid.has_square_in_row(0):
             self.state = GameState.LOSS
-        self.player = self.figure_factory.random(
-            self.grid.get_center_x(), 0)
+        self.player = self.figure_factory.produce_by_type(
+            self.grid.get_center_x(), 0, self.next_player.figure_type)
+        self.next_player = self.figure_factory.random()
+        self.scoreboard.set_next_figure(self.next_player)
         self.movements.figure = self.player
         self.player.add_on_grid(self.grid)
         self.accelerate_fall = False

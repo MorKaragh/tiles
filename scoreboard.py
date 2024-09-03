@@ -1,5 +1,6 @@
 from animation import AnimatorFactory
 from config import GameConfig
+from figures import TetrisFigure, FigureType
 from gaming_grid import GamingGrid
 from pygame import Surface
 from utils import load_img
@@ -22,13 +23,19 @@ class ScoreBoard:
         self.sample = Surface((self.config.SQUARE_SIZE * 4,
                                self.config.SQUARE_SIZE * 4))
         self.sample_grid = GamingGrid(4, 4, "Black", self.config.SQUARE_SIZE)
-        self.sample_grid.add_new_square(1, 1)
 
     def draw(self, screen: Surface):
         self.body.fill("Black")
         # self.body.blit(self.frame.next_frame(), (0, 0))
-        self.sample.fill("Grey")
+        self.sample.fill("Black")
         self.sample_grid.draw(self.sample)
         self.body.blit(self.sample, (25, 25))
         self.body.blit(self.frame, (0, 0))
         screen.blit(self.body, self.coords)
+
+    def set_next_figure(self, figure: TetrisFigure):
+        self.sample_grid.clear()
+        if figure.figure_type != FigureType.LINE:
+            figure.move_right()
+            figure.move_down()
+        figure.add_on_grid(self.sample_grid)

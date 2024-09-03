@@ -1,4 +1,5 @@
 import random
+from pygame import Surface
 from gaming_grid import GridSquare, GamingGrid, SquareImages
 from typing import List
 
@@ -54,6 +55,12 @@ class TetrisFigure:
             elif by_row[s.row].col < s.col:
                 by_row[s.row] = s
         return by_row.values()
+
+    def get_example(self, square_size: int):
+        surface = Surface((0, 0))
+        for s in self.squares:
+            surface.blit(s.image, (s.col * square_size, s.row * square_size))
+        return surface
 
 
 class TetrisFugureFactory:

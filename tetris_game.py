@@ -1,7 +1,8 @@
 import pygame
 from pygame import Surface
 from utils import get_grid_state_logger
-from game import TetrisGame, GameConfig, GameState
+from game import TetrisGame, GameState
+from config import GameConfig
 from gui import StateScreen
 from input_control import process_events, process_pressed_keys
 
@@ -14,7 +15,6 @@ pygame.display.set_caption("Grid framework testing")
 pygame.display.set_icon(pygame.image.load("images/icon.png"))
 
 state_logger = get_grid_state_logger()
-DEBUG = True
 
 clock = pygame.time.Clock()
 
@@ -35,8 +35,7 @@ while game.running:
         game.update()
         game.grid.draw(screen)
         game.scoreboard.draw(screen)
-        # screen.blit(grid_surf, (0, 0))
-        if DEBUG:
+        if config.DEBUG:
             state_logger.info(game.grid.__repr__())
     elif game.state == GameState.PAUSE:
         game.grid.draw(screen)

@@ -1,29 +1,11 @@
 import time
+from config import GameConfig
 from effects import SoundEffects
 from animation import AnimatorFactory
-from dataclasses import dataclass
 from enum import Enum
 from gaming_grid import GamingGrid
 from scoreboard import ScoreBoard
 from figures import TetrisFugureFactory, FigureMovement
-
-
-@dataclass
-class GameConfig:
-    GRID_ROWS = 20
-    GRID_COLS = 10
-    SQUARE_SIZE = 50
-    INITIAL_FALL_SPEED_FACTOR = 0.2
-    SIDE_MOVE_SPEED_FACTOR = 0.05
-    MOVE_DELAY_FACTOR = 2
-
-    def get_game_grid_size(self):
-        return (self.GRID_COLS * self.SQUARE_SIZE,
-                self.GRID_ROWS * self.SQUARE_SIZE)
-
-    def get_scoreboard_size(self):
-        return (5 * self.SQUARE_SIZE,
-                self.GRID_ROWS * self.SQUARE_SIZE)
 
 
 class GameState(Enum):
@@ -47,10 +29,7 @@ class TetrisGame:
         self.figure_factory = TetrisFugureFactory(self.config.GRID_COLS,
                                                   self.config.GRID_ROWS,
                                                   self.config.SQUARE_SIZE)
-        self.scoreboard = ScoreBoard(self.config.get_scoreboard_size(),
-                                     (self.config.GRID_COLS *
-                                      self.config.SQUARE_SIZE, 0),
-                                     self.animations)
+        self.scoreboard = ScoreBoard(self.config, self.animations)
         self.player = self.figure_factory.random(self.grid.get_center_x(), 0)
         self.movements = FigureMovement(self.player, self.grid)
         self.player.add_on_grid(self.grid)
@@ -68,6 +47,7 @@ class TetrisGame:
         self.last_fall_time = self.last_fall_time + time_gap
         self.last_move_time = self.last_move_time + time_gap
         self.last_time = time.time()
+        self.scoreboard.body.blit(self.player.get_example(10), (0, 0))
 
         if self.side_move_delay <= 0:
             self.side_move_delay += self.last_move_time

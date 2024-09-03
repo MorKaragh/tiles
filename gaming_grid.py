@@ -120,7 +120,8 @@ class GamingGrid:
         for square in self.squares:
             square.draw(screen)
         self._draw_grid_skel(screen)
-        self._process_animations(screen)
+        if self.animator_factory:
+            self._process_animations(screen)
 
     def _draw_grid_skel(self, screen):
         for i in range(0, self.cols + 1):

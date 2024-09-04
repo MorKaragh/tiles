@@ -28,14 +28,21 @@ class ScoreBoard:
         self.body.fill("Black")
         # self.body.blit(self.frame.next_frame(), (0, 0))
         self.sample.fill("Black")
-        self.sample_grid.draw(self.sample)
+        for s in self.next_figure.squares:
+            s.draw(self.sample)
         self.body.blit(self.sample, (25, 25))
         self.body.blit(self.frame, (0, 0))
         screen.blit(self.body, self.coords)
 
     def set_next_figure(self, figure: TetrisFigure):
+        self.next_figure = figure
+        x_space = max(s.x for s in self.next_figure.squares) + self.config.SQUARE_SIZE
+        y_space = max(s.y for s in self.next_figure.squares) + self.config.SQUARE_SIZE
+
+        for s in self.next_figure.squares:
+            s.x += ((self.config.SQUARE_SIZE * 4) - x_space) / 2
+            s.y += ((self.config.SQUARE_SIZE * 4) - y_space) / 2
+            s.fixed_coords = True
+
         self.sample_grid.clear()
-        if figure.figure_type != FigureType.LINE:
-            figure.move_right()
-            figure.move_down()
-        figure.add_on_grid(self.sample_grid)
+        self.next_figure.add_on_grid(self.sample_grid)

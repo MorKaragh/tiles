@@ -1,6 +1,6 @@
 import pygame
 from pygame import Surface
-from typing import List, Iterable
+from typing import List, Iterable, Tuple
 from animation import AnimatorFactory, Animator
 
 
@@ -38,6 +38,7 @@ class GridSquare(pygame.Rect):
         self.sizepx = sizepx
         self.color = color
         self.image = image
+        self.fixed_coords = None
         pygame.Rect.__init__(self,
                              self.sizepx * self.col,
                              self.sizepx * self.row,
@@ -73,8 +74,9 @@ class GridSquare(pygame.Rect):
         return self.row + step < self.row_max
 
     def draw(self, screen: Surface):
-        self.x = self.col * self.sizepx
-        self.y = self.row * self.sizepx
+        if not self.fixed_coords:
+            self.x = self.col * self.sizepx
+            self.y = self.row * self.sizepx
         if self.image:
             screen.blit(self.image, self)
         else:

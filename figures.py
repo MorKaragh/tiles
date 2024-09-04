@@ -51,6 +51,15 @@ class TetrisFigure:
                 by_col[s.col] = s
         return by_col.values()
 
+    def get_upper_border_squares(self):
+        by_row = {}
+        for s in self.squares:
+            if s.row not in by_row:
+                by_row[s.row] = s
+            elif by_row[s.row].col > s.col:
+                by_row[s.row] = s
+        return by_row.values()
+
     def get_left_border_squares(self):
         by_row = {}
         for s in self.squares:
@@ -131,16 +140,16 @@ class TetrisFugureFactory:
         return TetrisFigure(squares, FigureType.L)
 
     def J(self, col: int, row: int) -> TetrisFigure:
-        squares = [GridSquare(col, row, self.col_max, self.row_max,
+        squares = [GridSquare(col + 1, row, self.col_max, self.row_max,
                               self.square_size,
                               image=self.images.bluer),
-                   GridSquare(col, row + 1, self.col_max,
+                   GridSquare(col + 1, row + 1, self.col_max,
                               self.row_max, self.square_size,
                               image=self.images.bluer),
-                   GridSquare(col, row + 2, self.col_max,
+                   GridSquare(col + 1, row + 2, self.col_max,
                               self.row_max, self.square_size,
                               image=self.images.bluer),
-                   GridSquare(col - 1, row + 2, self.col_max, self.row_max,
+                   GridSquare(col, row + 2, self.col_max, self.row_max,
                               self.square_size,
                               image=self.images.bluer)]
         return TetrisFigure(squares, FigureType.J)

@@ -32,8 +32,11 @@ class TetrisGame:
         self.scoreboard = ScoreBoard(self.config, self.animations)
         self.player = self.figure_factory.random(self.grid.get_center_x(), 0)
         self.next_player = self.figure_factory.random()
+        self.movements = FigureMovement(self.next_player, self.grid)
+        self.movements.rotate_randomly(move_to_corner=True)
         self.scoreboard.set_next_figure(self.next_player)
-        self.movements = FigureMovement(self.player, self.grid)
+        self.movements.figure = self.player
+        self.movements.rotate_randomly()
         self.player.add_on_grid(self.grid)
         self.state = GameState.RUNNING
         self.running = True
@@ -78,9 +81,15 @@ class TetrisGame:
             self.effects.touch()
         if self.grid.has_square_in_row(0):
             self.state = GameState.LOSS
-        self.player = self.figure_factory.produce_by_type(
-            self.grid.get_center_x(), 0, self.next_player.figure_type)
+        self.player = self.next_player
+        for s in self.player.squares:
+            s.col += self.config.GRID_COLS // 2
+            s.fixed_coords = False
+        # self.player = self.figure_factory.produce_by_type(
+        #     self.grid.get_center_x(), 0, self.next_player.figure_type)
         self.next_player = self.figure_factory.random()
+        self.movements.figure = self.next_player
+        self.movements.rotate_randomly(move_to_corner=True)
         self.scoreboard.set_next_figure(self.next_player)
         self.movements.figure = self.player
         self.player.add_on_grid(self.grid)

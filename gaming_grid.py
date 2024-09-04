@@ -60,7 +60,7 @@ class GridSquare(pygame.Rect):
         return self.col - step >= 0
 
     def move_up(self, step: int = 1):
-        if self.has_space_up:
+        if self.has_space_up(step):
             self.row -= step
 
     def has_space_up(self, step: int = 1):
@@ -75,12 +75,15 @@ class GridSquare(pygame.Rect):
 
     def draw(self, screen: Surface):
         if not self.fixed_coords:
-            self.x = self.col * self.sizepx
-            self.y = self.row * self.sizepx
+            self.recalc_coords()
         if self.image:
             screen.blit(self.image, self)
         else:
             pygame.draw.rect(screen, self.color, self)
+
+    def recalc_coords(self):
+        self.x = self.col * self.sizepx
+        self.y = self.row * self.sizepx
 
 
 class RowRemovalAnimation:

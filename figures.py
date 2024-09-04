@@ -24,6 +24,11 @@ class TetrisFigure:
         self.squares = squares
         self.figure_type = figure_type
 
+    def move_up(self):
+        if all([s.has_space_up() for s in self.squares]):
+            for s in self.squares:
+                s.move_up()
+
     def move_right(self):
         if all([s.has_space_right() for s in self.squares]):
             for s in self.squares:
@@ -254,6 +259,26 @@ class FigureMovement:
             new_coord = new_coords[(s.col, s.row)]
             s.col = new_coord[0]
             s.row = new_coord[1]
+
+    def rotate_randomly(self, move_to_corner: bool = False):
+        if self.figure.figure_type == FigureType.BRICK:
+            return
+        for _ in range(random.randint(0, 3)):
+            self.rotate()
+        if move_to_corner:
+            self.move_to_upper_left_corner()
+        for s in self.figure.squares:
+            s.recalc_coords()
+
+    def move_to_upper_left_corner(self):
+        while all(x.col > 0 for x in self.figure.squares):
+            self.figure.move_left()
+        while all(x.row > 0 for x in self.figure.squares):
+            self.figure.move_up()
+        while any(x.col < 0 for x in self.figure.squares):
+            self.figure.move_right()
+        while any(x.row < 0 for x in self.figure.squares):
+            self.figure.move_down()
 
     def _coords_after_rotation(self):
         center_row = sum(

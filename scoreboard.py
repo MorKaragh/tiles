@@ -21,6 +21,8 @@ class ScoreBoard:
             "images/frame/glow_frame_blu.png", (self.size[0], self.size[0]))
         self.sample = Surface((self.config.SQUARE_SIZE * 4,
                                self.config.SQUARE_SIZE * 4))
+        self.score_area = Surface((self.config.SQUARE_SIZE * 4,
+                                   self.config.SQUARE_SIZE * 4))
 
     def draw(self, screen: Surface):
         self.body.fill("Black")
@@ -29,7 +31,7 @@ class ScoreBoard:
         for s in self.next_figure.squares:
             s.draw(self.sample)
         self.body.blit(self.sample, (25, 25))
-        self.body.blit(self.frame, (0, 0))
+        # self.body.blit(self.frame, (0, 0))
         screen.blit(self.body, self.coords)
 
     def set_next_figure(self, figure: TetrisFigure):

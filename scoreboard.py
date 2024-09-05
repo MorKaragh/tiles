@@ -1,7 +1,8 @@
+import pygame
 from animation import AnimatorFactory
 from config import GameConfig
 from figures import TetrisFigure
-from pygame import Surface
+from pygame import Surface, font
 from utils import load_img
 
 
@@ -31,8 +32,19 @@ class ScoreBoard:
         for s in self.next_figure.squares:
             s.draw(self.sample)
         self.body.blit(self.sample, (25, 25))
+        pygame.draw.line(self.body, (5, 17, 22), (0, 0), (0, self.size[1]), 5)
+        self.draw_score()
+        self.body.blit(self.score_area, (25, 525))
         # self.body.blit(self.frame, (0, 0))
         screen.blit(self.body, self.coords)
+
+    def draw_score(self):
+        text = font.Font("fonts/Dimkin Regular.ttf",
+                         40).render("1234567890", True, "White")
+        rect = text.get_rect(
+            center=(self.score_area.get_rect().size[0]/2,
+                    self.score_area.get_rect().size[1]/2))
+        self.score_area.blit(text, rect)
 
     def set_next_figure(self, figure: TetrisFigure):
         self.next_figure = figure

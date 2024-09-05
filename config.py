@@ -3,9 +3,9 @@ from dataclasses import dataclass
 
 @dataclass
 class GameConfig:
-    GRID_ROWS = 30
-    GRID_COLS = 20
-    SQUARE_SIZE = 30
+    GRID_ROWS = 20
+    GRID_COLS = 10
+    SQUARE_SIZE = 50
     INITIAL_FALL_SPEED_FACTOR = 0.2
     SIDE_MOVE_SPEED_FACTOR = 0.05
     MOVE_DELAY_FACTOR = 2

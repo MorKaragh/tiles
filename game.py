@@ -18,7 +18,7 @@ class TetrisGame:
 
     def __init__(self, config: GameConfig):
         self.config = config
-        self.effects = SoundEffects()
+        self.sound_effects = SoundEffects()
         self.animations = AnimatorFactory()
         self.grid = GamingGrid(
             self.config.GRID_COLS,
@@ -71,6 +71,14 @@ class TetrisGame:
         self.running = True
 
     def _process_figure_landing(self):
+        self._process_full_rows()
+        if self.grid.has_square_in_row(0):
+            self.state = GameState.LOSS
+        self._change_player_figure()
+        self.accelerate_fall = False
+        self.fall_speed_factor = self.config.INITIAL_FALL_SPEED_FACTOR
+
+    def _process_full_rows(self):
         full_rows = set()
         for s in self.player.squares:
             if self.grid.is_row_full(s.row):
@@ -78,25 +86,21 @@ class TetrisGame:
         if full_rows:
             self.scoreboard.add_score(self._calc_score(len(full_rows)))
             self.grid.remove_rows(full_rows)
-            self.effects.puff()
+            self.sound_effects.puff()
         else:
-            self.effects.touch()
-        if self.grid.has_square_in_row(0):
-            self.state = GameState.LOSS
+            self.sound_effects.touch()
+
+    def _change_player_figure(self):
         self.player = self.next_player
         for s in self.player.squares:
-            s.col += self.config.GRID_COLS // 2
+            s.col += self.config.GRID_COLS // 2 - 1
             s.fixed_coords = False
-        # self.player = self.figure_factory.produce_by_type(
-        #     self.grid.get_center_x(), 0, self.next_player.figure_type)
         self.next_player = self.figure_factory.random()
         self.movements.figure = self.next_player
         self.movements.rotate_randomly(move_to_corner=True)
         self.scoreboard.set_next_figure(self.next_player)
         self.movements.figure = self.player
         self.player.add_on_grid(self.grid)
-        self.accelerate_fall = False
-        self.fall_speed_factor = self.config.INITIAL_FALL_SPEED_FACTOR
 
     def _calc_score(self, rows_cnt):
         return 100 * rows_cnt * rows_cnt // 2

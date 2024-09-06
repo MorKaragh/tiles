@@ -14,8 +14,9 @@ class StateScreen:
     @staticmethod
     def _simple_text(text: str, screen: Surface):
         surf = Surface(screen.get_size())
-        surf.fill("Grey")
-        text = font.Font(None, 40).render(text, True, "Black")
+        surf.fill((5, 17, 22))
+        text = font.Font("fonts/Oldtimer-GOPpg.ttf",
+                         60).render(text, True, "White")
         rect = text.get_rect(
             center=(screen.get_size()[0]/2, screen.get_size()[1]/2))
         surf.blit(text, rect)

@@ -24,10 +24,15 @@ class ScoreBoard:
                                self.config.SQUARE_SIZE * 4))
         self.score_area = Surface((self.config.SQUARE_SIZE * 4,
                                    self.config.SQUARE_SIZE * 4))
+        self.score_font = font.Font("fonts/Dimkin Regular.ttf", 40)
+        self.score = 0
+
+    def reset(self):
+        self.score = 0
 
     def draw(self, screen: Surface):
         self.body.fill("Black")
-        # self.body.blit(self.frame.next_frame(), (0, 0))
+        self.score_area.fill("Black")
         self.sample.fill("Black")
         for s in self.next_figure.squares:
             s.draw(self.sample)
@@ -35,12 +40,10 @@ class ScoreBoard:
         pygame.draw.line(self.body, (5, 17, 22), (0, 0), (0, self.size[1]), 5)
         self.draw_score()
         self.body.blit(self.score_area, (25, 525))
-        # self.body.blit(self.frame, (0, 0))
         screen.blit(self.body, self.coords)
 
     def draw_score(self):
-        text = font.Font("fonts/Dimkin Regular.ttf",
-                         40).render("1234567890", True, "White")
+        text = self.score_font.render(str(self.score), True, (255, 254, 60))
         rect = text.get_rect(
             center=(self.score_area.get_rect().size[0]/2,
                     self.score_area.get_rect().size[1]/2))
@@ -59,3 +62,6 @@ class ScoreBoard:
             s.x += ((self.config.SQUARE_SIZE * 4) - x_space) / 2
             s.y += ((self.config.SQUARE_SIZE * 4) - y_space) / 2
             s.fixed_coords = True
+
+    def add_score(self, val: int):
+        self.score += val

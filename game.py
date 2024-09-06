@@ -64,6 +64,7 @@ class TetrisGame:
     def reset(self):
         self.grid.clear()
         self.player = self.figure_factory.random(self.grid.get_center_x(), 0)
+        self.scoreboard.reset()
         self.movements = FigureMovement(self.player, self.grid)
         self.player.add_on_grid(self.grid)
         self.state = GameState.RUNNING
@@ -75,6 +76,7 @@ class TetrisGame:
             if self.grid.is_row_full(s.row):
                 full_rows.add(s.row)
         if full_rows:
+            self.scoreboard.add_score(self._calc_score(len(full_rows)))
             self.grid.remove_rows(full_rows)
             self.effects.puff()
         else:
@@ -95,3 +97,6 @@ class TetrisGame:
         self.player.add_on_grid(self.grid)
         self.accelerate_fall = False
         self.fall_speed_factor = self.config.INITIAL_FALL_SPEED_FACTOR
+
+    def _calc_score(self, rows_cnt):
+        return 100 * rows_cnt * rows_cnt // 2

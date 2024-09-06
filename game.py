@@ -40,12 +40,14 @@ class TetrisGame:
         self.player.add_on_grid(self.grid)
         self.state = GameState.RUNNING
         self.running = True
-        self.fall_speed_factor = self.config.INITIAL_FALL_SPEED_FACTOR
+        self.level = self.config.LEVEL
+        self.fall_speed_factor = self.get_fall_speed_factor()
         self.last_time = time.time()
         self.last_fall_time = 0
         self.last_move_time = 0
         self.accelerate_fall = False
         self.side_move_delay = 0
+        self.level_increase_limit = self.config.LEVEL_ROW_LIMIT
 
     def update(self):
         time_gap = time.time() - self.last_time
@@ -69,6 +71,7 @@ class TetrisGame:
         self.player.add_on_grid(self.grid)
         self.state = GameState.RUNNING
         self.running = True
+        self.level = self.config.LEVEL
 
     def _process_figure_landing(self):
         self._process_full_rows()
@@ -76,7 +79,7 @@ class TetrisGame:
             self.state = GameState.LOSS
         self._change_player_figure()
         self.accelerate_fall = False
-        self.fall_speed_factor = self.config.INITIAL_FALL_SPEED_FACTOR
+        self.fall_speed_factor = self.get_fall_speed_factor()
 
     def _process_full_rows(self):
         full_rows = set()
@@ -86,7 +89,16 @@ class TetrisGame:
         if full_rows:
             self.scoreboard.add_score(self._calc_score(len(full_rows)))
             self.grid.remove_rows(full_rows)
-            self.sound_effects.puff()
+            if len(full_rows) > 2:
+                self.sound_effects.break_hard()
+            else:
+                self.sound_effects.light_break()
+            if self.config.LEVEL_INCREASE:
+                self.level_increase_limit -= len(full_rows)
+                if self.level_increase_limit <= 0:
+                    self.level_increase_limit = self.config.LEVEL_ROW_LIMIT
+                    self.level += 1
+                    self.scoreboard.level = self.level
         else:
             self.sound_effects.touch()
 
@@ -103,4 +115,7 @@ class TetrisGame:
         self.player.add_on_grid(self.grid)
 
     def _calc_score(self, rows_cnt):
-        return 100 * rows_cnt * rows_cnt // 2
+        return self.level * 100 * rows_cnt * rows_cnt // 2
+
+    def get_fall_speed_factor(self):
+        return 0.42 - (0.02 * self.level)

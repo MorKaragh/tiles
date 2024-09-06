@@ -40,4 +40,4 @@ def process_events(events, game: TetrisGame, config: GameConfig):
         elif event.type == pygame.KEYUP:
             if event.key in [pygame.K_DOWN, pygame.K_j]:
                 game.accelerate_fall = False
-                game.fall_speed_factor = config.INITIAL_FALL_SPEED_FACTOR
+                game.fall_speed_factor = game.get_fall_speed_factor()

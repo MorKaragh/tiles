@@ -39,6 +39,7 @@ while game.running:
             state_logger.info(game.grid.__repr__())
     elif game.state == GameState.PAUSE:
         game.grid.draw(screen)
+        game.scoreboard.draw(screen)
     elif game.state == GameState.LOSS:
         StateScreen.draw_loss(screen)
 

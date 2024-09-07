@@ -1,8 +1,9 @@
 import random
+import time
 from enum import Enum
-from pygame import Surface
 from gaming_grid import GridSquare, GamingGrid, SquareImages
 from typing import List
+
 
 
 class FigureType(Enum):
@@ -30,11 +31,13 @@ class TetrisFigure:
                 s.move_up()
 
     def move_right(self):
+        print(f"right {time.time()}")
         if all([s.has_space_right() for s in self.squares]):
             for s in self.squares:
                 s.move_right()
 
     def move_left(self):
+        print(f"left {time.time()}")
         if all([s.has_space_left() for s in self.squares]):
             for s in self.squares:
                 s.move_left()
@@ -235,6 +238,7 @@ class FigureMovement:
         return True
 
     def move_right(self):
+
         for s in self.figure.get_right_border_squares():
             cell_occupied = self.grid.has_square_in(s.col + 1, s.row)
             if s.col == self.grid.cols - 1 or cell_occupied:

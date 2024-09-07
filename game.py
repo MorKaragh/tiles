@@ -12,6 +12,7 @@ class GameState(Enum):
     RUNNING = 0
     LOSS = 1
     PAUSE = 2
+    MENU = 3
 
 
 class TetrisGame:
@@ -118,4 +119,4 @@ class TetrisGame:
         return self.level * 100 * rows_cnt * rows_cnt // 2
 
     def get_fall_speed_factor(self):
-        return 0.42 - (0.02 * self.level)
+        return 0.45 - (0.015 * self.level)

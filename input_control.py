@@ -15,6 +15,8 @@ def process_pressed_keys(pressed, game, config):
 
 
 def process_events(events, game: TetrisGame, config: GameConfig):
+    if events:
+        print(events)
     for event in events:
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -30,6 +32,8 @@ def process_events(events, game: TetrisGame, config: GameConfig):
             elif event.key in [pygame.K_LEFT, pygame.K_h]:
                 game.side_move_delay = -7
                 game.movements.move_left()
+            elif event.key == pygame.K_ESCAPE:
+                game.state = GameState.MENU
             elif event.key == pygame.K_SPACE:
                 if game.state == GameState.PAUSE:
                     game.state = GameState.RUNNING

@@ -1,0 +1,11 @@
+{
+    "GRID_ROWS": 20,
+    "GRID_COLS": 10,
+    "SQUARE_SIZE": 50,
+    "LEVEL": 20,
+    "LEVEL_INCREASE": true,
+    "LEVEL_ROW_LIMIT": 10,
+    "SIDE_MOVE_SPEED_FACTOR": 0.05,
+    "MOVE_DELAY_FACTOR": 2,
+    "DEBUG": false
+}

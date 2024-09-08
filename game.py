@@ -120,3 +120,8 @@ class TetrisGame:
 
     def get_fall_speed_factor(self):
         return 0.45 - (0.015 * self.level)
+
+    def set_level(self, val: int):
+        self.level = val
+        self.scoreboard.level = val
+        self.fall_speed_factor = self.get_fall_speed_factor()

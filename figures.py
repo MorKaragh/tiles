@@ -5,7 +5,6 @@ from gaming_grid import GridSquare, GamingGrid, SquareImages
 from typing import List
 
 
-
 class FigureType(Enum):
     LINE = "LINE"
     BRICK = "BRICK"
@@ -31,13 +30,11 @@ class TetrisFigure:
                 s.move_up()
 
     def move_right(self):
-        print(f"right {time.time()}")
         if all([s.has_space_right() for s in self.squares]):
             for s in self.squares:
                 s.move_right()
 
     def move_left(self):
-        print(f"left {time.time()}")
         if all([s.has_space_left() for s in self.squares]):
             for s in self.squares:
                 s.move_left()
@@ -96,7 +93,8 @@ class TetrisFugureFactory:
         self.images = SquareImages(square_size)
 
     def random(self, col: int = 0, row: int = 0) -> TetrisFigure:
-        funcs = [self.brick, self.L, self.J, self.T, self.S, self.Z, self.line]
+        funcs = [self.brick, self.L, self.J, self.T,
+                 self.S, self.Z, self.line, self.line]
         choise = random.choice(funcs)
         return choise(col, row)
 

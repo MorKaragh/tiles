@@ -1,4 +1,5 @@
 import pygame
+import records
 from pygame import Surface
 from utils import get_grid_state_logger
 from game import TetrisGame, GameState
@@ -44,6 +45,7 @@ while game.running:
         game.grid.draw(screen)
         game.scoreboard.draw(screen)
     elif game.state == GameState.LOSS:
+        records.save(game.config.PLAYER, game.scoreboard.score)
         StateScreen.draw_loss(screen, game)
     elif game.state == GameState.MENU:
         events = pygame.event.get()

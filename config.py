@@ -7,6 +7,7 @@ FILENAME = "storage.json"
 @dataclass
 class GameConfig:
 
+    PLAYER: str = field(default="Player")
     GRID_ROWS: int = field(default=20)
     GRID_COLS: int = field(default=10)
     SQUARE_SIZE: int = field(default=50)
@@ -14,7 +15,6 @@ class GameConfig:
     LEVEL_INCREASE: bool = field(default=True)
     LEVEL_ROW_LIMIT: int = field(default=10)
     SIDE_MOVE_SPEED_FACTOR: float = field(default=0.05)
-    MOVE_DELAY_FACTOR: int = field(default=2)
     DEBUG: bool = field(default=False)
 
     def get_game_grid_size(self):

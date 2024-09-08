@@ -1,6 +1,7 @@
 import pygame
 import pygame_menu
-from pygame_menu import Theme, Menu, widgets
+import records
+from pygame_menu import Theme, Menu
 from pygame import font, Surface
 from typing import Tuple, Any
 from game import TetrisGame
@@ -21,18 +22,21 @@ class MainMenu:
             title='',
             width=400
         )
+        player = self.game.config.PLAYER
         self.user_name = self.menu.add.text_input('Name: ',
-                                                  default='Player',
-                                                  maxchar=10)
+                                                  default=player,
+                                                  maxchar=10,
+                                                  onchange=self.change_player)
         self.menu.add.range_slider("Level:",
                                    range_values=(1, 30),
                                    increment=1,
                                    default=self.game.config.LEVEL,
                                    onchange=self.change_level)
+        autochange = 0 if self.game.config.LEVEL_INCREASE else 1
         self.menu.add.selector('Level auto change: ',
                                [('Yes', True), ('No', False)],
                                onchange=self.set_lvl_auto_change,
-                               default=0 if self.game.config.LEVEL_INCREASE else 1)
+                               default=autochange)
         self.menu.add.button('Play', self.start_the_game)
         self.menu.add.button('Quit', pygame_menu.events.EXIT)
 
@@ -48,6 +52,9 @@ class MainMenu:
         self.game.config.LEVEL = val
         self.game.set_level(val)
 
+    def change_player(self, val: str):
+        self.game.config.PLAYER = val
+
 
 class StateScreen:
 
@@ -60,12 +67,18 @@ class StateScreen:
         main_text = big_font.render("Game over!", True, "White")
         score_text = small_font.render(f"score: {game.scoreboard.score}",
                                        True, "White")
+        curr_record = records.load_for_player(game.config.PLAYER)
+        record_text = small_font.render(f"max score: {curr_record}",
+                                        True, "White")
         main_rect = main_text.get_rect(
-            center=(screen.get_size()[0]/2, screen.get_size()[1]/2))
+            center=(screen.get_size()[0]/2, 2*screen.get_size()[1]/5))
         score_rect = score_text.get_rect(
-            center=(screen.get_size()[0]/2, 3*screen.get_size()[1]/4))
+            center=(screen.get_size()[0]/2, 3*screen.get_size()[1]/5))
+        record_rect = record_text.get_rect(
+            center=(screen.get_size()[0]/2, 4*screen.get_size()[1]/5))
         surf.blit(main_text, main_rect)
         surf.blit(score_text, score_rect)
+        surf.blit(record_text, record_rect)
         screen.blit(surf, (0, 0))
 
     @staticmethod

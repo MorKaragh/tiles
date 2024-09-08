@@ -282,6 +282,11 @@ class FigureMovement:
         while any(x.row < 0 for x in self.figure.squares):
             self.figure.move_down()
 
+    def move_to_top(self):
+        min_row = min(x.row > 0 for x in self.figure.squares)
+        for x in self.figure.squares:
+            x.row -= min_row
+
     def _coords_after_rotation(self):
         center_row = sum(
             s.row for s in self.figure.squares) // len(self.figure.squares)

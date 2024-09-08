@@ -35,6 +35,7 @@ class TetrisGame:
         self.next_player = self.figure_factory.random()
         self.movements = FigureMovement(self.next_player, self.grid)
         self.movements.rotate_randomly(move_to_corner=True)
+        self.movements.move_to_top()
         self.scoreboard.set_next_figure(self.next_player)
         self.movements.figure = self.player
         self.movements.rotate_randomly()

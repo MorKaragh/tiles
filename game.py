@@ -114,7 +114,10 @@ class TetrisGame:
         self.movements.rotate_randomly(move_to_corner=True)
         self.scoreboard.set_next_figure(self.next_player)
         self.movements.figure = self.player
-        self.player.add_on_grid(self.grid)
+        if self.movements.intersects_with_other_squares():
+            self.state = GameState.LOSS
+        else:
+            self.player.add_on_grid(self.grid)
 
     def _calc_score(self, rows_cnt):
         return self.level * 100 * rows_cnt * rows_cnt // 2

@@ -255,6 +255,7 @@ class FigureMovement:
         new_coords = self._coords_after_rotation()
         self._prevent_moving_up_after_rotation(new_coords)
         self._rotation_wall_bump(new_coords)
+        self._rotation_outside_grid_prevention(new_coords)
         if self._intersects_with_other_squares(new_coords):
             return
         for s in self.figure.squares:
@@ -314,6 +315,16 @@ class FigureMovement:
         while any(c[0] > self.grid.cols - 1 for c in new_coords.values()):
             for c in new_coords:
                 new_coords[c] = (new_coords[c][0] - 1, new_coords[c][1])
+
+    def _rotation_outside_grid_prevention(self, new_coords):
+        min_row = min(c[1] for c in new_coords.values())
+        if min_row < 0:
+            for c in new_coords:
+                new_coords[c] = (new_coords[c][0], new_coords[c][1] - min_row)
+
+    def intersects_with_other_squares(self):
+        coords = [(c.col, c.row) for c in self.figure.squares]
+        return any(self.grid.has_square_in(*c) for c in coords)
 
     def _intersects_with_other_squares(self, new_coords):
         return any(self.grid.has_square_in(*c) and c not in new_coords

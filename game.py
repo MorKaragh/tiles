@@ -110,6 +110,8 @@ class TetrisGame:
             s.col += self.config.GRID_COLS // 2 - 1
             s.fixed_coords = False
         self.next_player = self.figure_factory.random()
+        if (self.next_player.figure_type == self.player.figure_type):
+            self.next_player = self.figure_factory.random()
         self.movements.figure = self.next_player
         self.movements.rotate_randomly(move_to_corner=True)
         self.scoreboard.set_next_figure(self.next_player)

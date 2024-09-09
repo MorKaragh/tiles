@@ -1,8 +1,8 @@
 import random
-import time
 from enum import Enum
-from gaming_grid import GridSquare, GamingGrid, SquareImages
 from typing import List
+
+from gaming_grid import GridSquare, GamingGrid, SquareImages
 
 
 class FigureType(Enum):

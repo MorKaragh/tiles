@@ -1,6 +1,6 @@
 import json
 
-FILENAME = "scores.json"
+FILENAME = "../scores.json"
 
 
 def load_all():

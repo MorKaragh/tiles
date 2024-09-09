@@ -1,11 +1,12 @@
 import time
+from enum import Enum
+
+from animation import AnimatorFactory
 from config import GameConfig
 from effects import SoundEffects
-from animation import AnimatorFactory
-from enum import Enum
+from figures import TetrisFugureFactory, FigureMovement
 from gaming_grid import GamingGrid
 from scoreboard import ScoreBoard
-from figures import TetrisFugureFactory, FigureMovement
 
 
 class GameState(Enum):

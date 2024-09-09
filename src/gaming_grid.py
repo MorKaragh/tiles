@@ -1,19 +1,21 @@
+from typing import List, Iterable
+
 import pygame
 from pygame import Surface
-from typing import List, Iterable, Tuple
+
 from animation import AnimatorFactory, Animator
 
 
 class SquareImages:
     def __init__(self, square_size_px: int):
         self.square_size_px = square_size_px
-        self.red = self.load_img("images/red.png")
-        self.pink = self.load_img("images/pink.png")
-        self.green = self.load_img("images/green.png")
-        self.blue = self.load_img("images/blue.png")
-        self.bluer = self.load_img("images/bluer.png")
-        self.violet = self.load_img("images/violet.png")
-        self.yellow = self.load_img("images/yellow.png")
+        self.red = self.load_img("../images/red.png")
+        self.pink = self.load_img("../images/pink.png")
+        self.green = self.load_img("../images/green.png")
+        self.blue = self.load_img("../images/blue.png")
+        self.bluer = self.load_img("../images/bluer.png")
+        self.violet = self.load_img("../images/violet.png")
+        self.yellow = self.load_img("../images/yellow.png")
 
     def load_img(self, path: str):
         img = pygame.image.load(path).convert_alpha()

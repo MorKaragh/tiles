@@ -1,5 +1,6 @@
 import pygame
-from game import GamingGrid,  GameConfig
+
+from game import GamingGrid, GameConfig
 
 clock = pygame.time.Clock()
 
@@ -9,12 +10,12 @@ pygame.init()
 screen = pygame.display.set_mode((config.GRID_COLS * config.SQUARE_SIZE,
                                   config.GRID_ROWS * config.SQUARE_SIZE))
 pygame.display.set_caption("Grid framework testing")
-pygame.display.set_icon(pygame.image.load("images/icon.png"))
+pygame.display.set_icon(pygame.image.load("../images/icon.png"))
 
 running = True
 
 total_lines = 0
-with open("grid_state.log", 'r') as file:
+with open("../grid_state.log", 'r') as file:
     lines = file.readlines()
     total_lines = len(lines)
 
@@ -29,16 +30,16 @@ def get_line_from_file(filename, line_number):
         return None
 
 
-curr_grid_state = get_line_from_file("grid_state.log", curr_debug_line)
+curr_grid_state = get_line_from_file("../grid_state.log", curr_debug_line)
 
 
 def get_next_state():
     global curr_debug_line
     global curr_grid_state
-    prev_record = get_line_from_file("grid_state.log", curr_debug_line)
+    prev_record = get_line_from_file("../grid_state.log", curr_debug_line)
     while curr_grid_state == prev_record:
         curr_debug_line -= 1
-        prev_record = get_line_from_file("grid_state.log", curr_debug_line)
+        prev_record = get_line_from_file("../grid_state.log", curr_debug_line)
     curr_grid_state = prev_record
     return prev_record
 
@@ -46,10 +47,10 @@ def get_next_state():
 def get_prev_state():
     global curr_debug_line
     global curr_grid_state
-    prev_record = get_line_from_file("grid_state.log", curr_debug_line)
+    prev_record = get_line_from_file("../grid_state.log", curr_debug_line)
     while curr_grid_state == prev_record:
         curr_debug_line += 1
-        prev_record = get_line_from_file("grid_state.log", curr_debug_line)
+        prev_record = get_line_from_file("../grid_state.log", curr_debug_line)
     curr_grid_state = prev_record
     return prev_record
 

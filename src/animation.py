@@ -1,7 +1,9 @@
-import pygame
-from pygame import Surface
 from pathlib import Path
 from typing import List, Tuple, Union
+
+import pygame
+from pygame import Surface
+
 from utils import load_img
 
 
@@ -32,7 +34,7 @@ class AnimationSprites:
     def get_puff_sprites(self) -> List[Surface]:
         if self.puff_sprites:
             return self.puff_sprites
-        puff = Spritesheet("images/puff_anim_yellow.png", (192, 192))
+        puff = Spritesheet("../images/puff_anim_yellow.png", (192, 192))
         sprites = []
         for i in range(4, 7):
             for j in range(5):

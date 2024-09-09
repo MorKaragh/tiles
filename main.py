@@ -1,11 +1,12 @@
 import pygame
-import records
 from pygame import Surface
-from utils import get_grid_state_logger
-from game import TetrisGame, GameState
-from config import GameConfig
-from gui import StateScreen, MainMenu
-from input_control import process_events, process_pressed_keys
+
+from src import records
+from src.config import GameConfig
+from src.game import TetrisGame, GameState
+from src.gui import StateScreen, MainMenu
+from src.input_control import process_events, process_pressed_keys
+from src.utils import get_grid_state_logger
 
 config = GameConfig.load_default()
 

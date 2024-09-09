@@ -1,7 +1,7 @@
 import json
 from dataclasses import dataclass, asdict, field
 
-FILENAME = "storage.json"
+FILENAME = "../storage.json"
 
 
 @dataclass

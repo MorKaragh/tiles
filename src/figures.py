@@ -2,7 +2,7 @@ import random
 from enum import Enum
 from typing import List
 
-from gaming_grid import GridSquare, GamingGrid, SquareImages
+from src.gaming_grid import GridSquare, GamingGrid, SquareImages
 
 
 class FigureType(Enum):

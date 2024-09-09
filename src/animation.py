@@ -4,8 +4,6 @@ from typing import List, Tuple, Union
 import pygame
 from pygame import Surface
 
-from utils import load_img
-
 
 class CyclingAnimation:
 
@@ -34,7 +32,7 @@ class AnimationSprites:
     def get_puff_sprites(self) -> List[Surface]:
         if self.puff_sprites:
             return self.puff_sprites
-        puff = Spritesheet("../images/puff_anim_yellow.png", (192, 192))
+        puff = Spritesheet("images/puff_anim_yellow.png", (192, 192))
         sprites = []
         for i in range(4, 7):
             for j in range(5):
@@ -42,13 +40,6 @@ class AnimationSprites:
                 sprites.append(img)
         self.puff_sprites = sprites
         return self.puff_sprites
-
-    def get_gold_frame_sprites(self, width: int = 200) -> List[Surface]:
-        frames = []
-        for i in range(1, 10):
-            frames.append(
-                load_img(f"images/frame/glow_frame{i}.png", (width, width)))
-        return frames
 
 
 class Spritesheet:

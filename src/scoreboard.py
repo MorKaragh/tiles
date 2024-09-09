@@ -1,10 +1,9 @@
 import pygame
 from pygame import Surface, font
 
-from animation import AnimatorFactory
-from config import GameConfig
-from figures import TetrisFigure
-from utils import load_img
+from src.animation import AnimatorFactory
+from src.config import GameConfig
+from src.figures import TetrisFigure
 
 
 class ScoreBoard:
@@ -18,17 +17,14 @@ class ScoreBoard:
         self.coords = (self.config.GRID_COLS * self.config.SQUARE_SIZE, 0)
         self.body = Surface(self.size)
         self.coords = self.coords
-        # self.frame = animations.get_gold_frame_amin(size[0])
-        self.frame = load_img(
-            "images/frame/glow_frame_blu.png", (self.size[0], self.size[0]))
         self.sample = Surface((self.config.SQUARE_SIZE * 4,
                                self.config.SQUARE_SIZE * 4))
         self.score_area = Surface((self.config.SQUARE_SIZE * 4,
                                    self.config.SQUARE_SIZE * 2))
         self.level_area = Surface((self.config.SQUARE_SIZE * 4,
                                    self.config.SQUARE_SIZE * 2))
-        self.score_font = font.Font("../fonts/Dimkin Regular.ttf", 40)
-        self.level_font = font.Font("../fonts/Dimkin Regular.ttf", 50)
+        self.score_font = font.Font("fonts/Dimkin Regular.ttf", 40)
+        self.level_font = font.Font("fonts/Dimkin Regular.ttf", 50)
         self.score = 0
         self.level = self.config.LEVEL
 

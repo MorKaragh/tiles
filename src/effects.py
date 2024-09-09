@@ -5,9 +5,9 @@ class SoundEffects:
 
     def __init__(self):
         pygame.mixer.init()
-        self.touch_snd = pygame.mixer.Sound("../sounds/touch.wav")
-        self.puff_snd = pygame.mixer.Sound("../sounds/break.wav")
-        self.break_light_snd = pygame.mixer.Sound("../sounds/break-l3.wav")
+        self.touch_snd = pygame.mixer.Sound("sounds/touch.wav")
+        self.puff_snd = pygame.mixer.Sound("sounds/break.wav")
+        self.break_light_snd = pygame.mixer.Sound("sounds/break-l3.wav")
 
     def touch(self):
         self.touch_snd.play()

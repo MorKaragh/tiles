@@ -1,6 +1,6 @@
 import pygame
 
-from game import GamingGrid, GameConfig
+from src.game import GamingGrid, GameConfig
 
 clock = pygame.time.Clock()
 

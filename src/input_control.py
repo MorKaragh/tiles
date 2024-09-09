@@ -1,6 +1,6 @@
 import pygame
 
-from game import GameState, TetrisGame, GameConfig
+from src.game import GameState, TetrisGame, GameConfig
 
 
 def process_pressed_keys(pressed, game, config):

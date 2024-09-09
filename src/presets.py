@@ -1,4 +1,4 @@
-from gaming_grid import GamingGrid
+from src.gaming_grid import GamingGrid
 
 
 def fill_multirow_with_break(grid: GamingGrid):

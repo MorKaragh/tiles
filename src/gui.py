@@ -5,14 +5,14 @@ import pygame_menu
 from pygame import font, Surface
 from pygame_menu import Theme, Menu
 
-import records
-from game import TetrisGame
+from src.records import load_for_player
+from src.game import TetrisGame
 
 
 class MainMenu:
 
     def __init__(self, game: TetrisGame):
-        self.font = pygame.font.Font("../fonts/Oldtimer-GOPpg.ttf", 20)
+        self.font = pygame.font.Font("fonts/Oldtimer-GOPpg.ttf", 20)
         self.mytheme = Theme(background_color=(0, 0, 0, 0),
                              title=False,
                              widget_padding=25,
@@ -64,12 +64,12 @@ class StateScreen:
     def draw_loss(screen, game: TetrisGame):
         surf = Surface(screen.get_size())
         surf.fill((5, 17, 22))
-        big_font = font.Font("../fonts/Oldtimer-GOPpg.ttf", 60)
-        small_font = font.Font("../fonts/Oldtimer-GOPpg.ttf", 30)
+        big_font = font.Font("fonts/Oldtimer-GOPpg.ttf", 60)
+        small_font = font.Font("fonts/Oldtimer-GOPpg.ttf", 30)
         main_text = big_font.render("Game over!", True, "White")
         score_text = small_font.render(f"score: {game.scoreboard.score}",
                                        True, "White")
-        curr_record = records.load_for_player(game.config.PLAYER)
+        curr_record = load_for_player(game.config.PLAYER)
         record_text = small_font.render(f"max score: {curr_record}",
                                         True, "White")
         main_rect = main_text.get_rect(
@@ -91,7 +91,7 @@ class StateScreen:
     def _simple_text(text: str, screen: Surface):
         surf = Surface(screen.get_size())
         surf.fill((5, 17, 22))
-        text = font.Font("../fonts/Oldtimer-GOPpg.ttf",
+        text = font.Font("fonts/Oldtimer-GOPpg.ttf",
                          60).render(text, True, "White")
         rect = text.get_rect(
             center=(screen.get_size()[0]/2, screen.get_size()[1]/2))

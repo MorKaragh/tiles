@@ -30,9 +30,10 @@ class MainMenu:
                                                   maxchar=10,
                                                   onchange=self.change_player)
         self.menu.add.range_slider("Level:",
-                                   range_values=(1, 30),
+                                   range_values=[i for i in range(1, 31)],
                                    increment=1,
                                    default=self.game.config.LEVEL,
+                                   range_text_value_enabled=False,
                                    onchange=self.change_level)
         autochange = 0 if self.game.config.LEVEL_INCREASE else 1
         self.menu.add.selector('Level auto change: ',

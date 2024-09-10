@@ -313,9 +313,10 @@ class FigureMovement:
 
     def _prevent_moving_up_after_rotation(self, new_coords):
         bottom = max(s.row for s in self.figure.squares)
-        while max(c[1] for c in new_coords.values()) < bottom:
-            for c in new_coords:
-                new_coords[c] = (new_coords[c][0], new_coords[c][1] + 1)
+        new_bottom = max(c[1] for c in new_coords.values())
+        for c in new_coords:
+            new_coords[c] = (new_coords[c][0], new_coords[c]
+                             [1] - (new_bottom - bottom))
 
     def _rotation_wall_bump(self, new_coords):
         while any(c[0] < 0 for c in new_coords.values()):

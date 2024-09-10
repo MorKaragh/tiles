@@ -75,6 +75,7 @@ class TetrisGame:
         self.state = GameState.RUNNING
         self.running = True
         self.level = self.config.LEVEL
+        self.fall_speed_factor = self.get_fall_speed_factor()
 
     def _process_figure_landing(self):
         self._process_full_rows()

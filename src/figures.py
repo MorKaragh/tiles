@@ -1,6 +1,6 @@
 import random
 from enum import Enum
-from typing import List
+from typing import List, Tuple
 
 from src.gaming_grid import GridSquare, GamingGrid, SquareImages
 
@@ -19,8 +19,7 @@ class TetrisFigure:
 
     def __init__(self,
                  squares: List[GridSquare],
-                 figure_type: FigureType,
-                 is_falling: bool = True):
+                 figure_type: FigureType):
         self.squares = squares
         self.figure_type = figure_type
 
@@ -131,93 +130,103 @@ class TetrisFugureFactory:
         return TetrisFigure(squares, FigureType.BRICK)
 
     def L(self, col: int, row: int) -> TetrisFigure:
-        squares = [GridSquare(col, row, self.col_max,
-                              self.row_max, self.square_size,
-                              image=self.images.red),
-                   GridSquare(col, row + 1, self.col_max,
-                              self.row_max, self.square_size,
-                              image=self.images.red),
-                   GridSquare(col, row + 2, self.col_max,
-                              self.row_max, self.square_size,
-                              image=self.images.red),
-                   GridSquare(col + 1, row + 2, self.col_max,
-                              self.row_max, self.square_size,
-                              image=self.images.red)]
+        squares = [
+            GridSquare(col, row + 1, self.col_max,
+                       self.row_max, self.square_size,
+                       image=self.images.red),
+            GridSquare(col, row, self.col_max,
+                       self.row_max, self.square_size,
+                       image=self.images.red),
+            GridSquare(col, row + 2, self.col_max,
+                       self.row_max, self.square_size,
+                       image=self.images.red),
+            GridSquare(col + 1, row + 2, self.col_max,
+                       self.row_max, self.square_size,
+                       image=self.images.red)]
         return TetrisFigure(squares, FigureType.L)
 
     def J(self, col: int, row: int) -> TetrisFigure:
-        squares = [GridSquare(col + 1, row, self.col_max, self.row_max,
-                              self.square_size,
-                              image=self.images.bluer),
-                   GridSquare(col + 1, row + 1, self.col_max,
-                              self.row_max, self.square_size,
-                              image=self.images.bluer),
-                   GridSquare(col + 1, row + 2, self.col_max,
-                              self.row_max, self.square_size,
-                              image=self.images.bluer),
-                   GridSquare(col, row + 2, self.col_max, self.row_max,
-                              self.square_size,
-                              image=self.images.bluer)]
+        squares = [
+            GridSquare(col + 1, row + 1, self.col_max,
+                       self.row_max, self.square_size,
+                       image=self.images.bluer),
+            GridSquare(col + 1, row, self.col_max, self.row_max,
+                       self.square_size,
+                       image=self.images.bluer),
+            GridSquare(col + 1, row + 2, self.col_max,
+                       self.row_max, self.square_size,
+                       image=self.images.bluer),
+            GridSquare(col, row + 2, self.col_max, self.row_max,
+                       self.square_size,
+                       image=self.images.bluer)]
         return TetrisFigure(squares, FigureType.J)
 
     def S(self, col: int, row: int) -> TetrisFigure:
-        squares = [GridSquare(col, row, self.col_max, self.row_max,
-                              self.square_size,
-                              image=self.images.green),
-                   GridSquare(col + 1, row, self.col_max,
-                              self.row_max, self.square_size,
-                              image=self.images.green),
-                   GridSquare(col + 1, row + 1, self.col_max,
-                              self.row_max, self.square_size,
-                              image=self.images.green),
-                   GridSquare(col + 2, row + 1, self.col_max, self.row_max,
-                              self.square_size,
-                              image=self.images.green)]
+        squares = [
+            GridSquare(col + 1, row + 1, self.col_max,
+                       self.row_max, self.square_size,
+                       image=self.images.green),
+            GridSquare(col, row, self.col_max, self.row_max,
+                       self.square_size,
+                       image=self.images.green),
+            GridSquare(col + 1, row, self.col_max,
+                       self.row_max, self.square_size,
+                       image=self.images.green),
+            GridSquare(col + 2, row + 1, self.col_max, self.row_max,
+                       self.square_size,
+                       image=self.images.green)
+        ]
         return TetrisFigure(squares, FigureType.S)
 
     def Z(self, col: int, row: int) -> TetrisFigure:
-        squares = [GridSquare(col + 1, row, self.col_max, self.row_max,
-                              self.square_size,
-                              image=self.images.pink),
-                   GridSquare(col + 2, row, self.col_max,
-                              self.row_max, self.square_size,
-                              image=self.images.pink),
-                   GridSquare(col, row + 1, self.col_max,
-                              self.row_max, self.square_size,
-                              image=self.images.pink),
-                   GridSquare(col + 1, row + 1, self.col_max, self.row_max,
-                              self.square_size,
-                              image=self.images.pink)]
+        squares = [
+            GridSquare(col + 1, row + 1, self.col_max, self.row_max,
+                       self.square_size,
+                       image=self.images.pink),
+            GridSquare(col + 1, row, self.col_max, self.row_max,
+                       self.square_size,
+                       image=self.images.pink),
+            GridSquare(col + 2, row, self.col_max,
+                       self.row_max, self.square_size,
+                       image=self.images.pink),
+            GridSquare(col, row + 1, self.col_max,
+                       self.row_max, self.square_size,
+                       image=self.images.pink)
+        ]
         return TetrisFigure(squares, FigureType.Z)
 
     def T(self, col: int, row: int) -> TetrisFigure:
-        squares = [GridSquare(col + 1, row, self.col_max, self.row_max,
-                              self.square_size,
-                              image=self.images.violet),
-                   GridSquare(col + 2, row + 1, self.col_max,
-                              self.row_max, self.square_size,
-                              image=self.images.violet),
-                   GridSquare(col, row + 1, self.col_max,
-                              self.row_max, self.square_size,
-                              image=self.images.violet),
-                   GridSquare(col + 1, row + 1, self.col_max, self.row_max,
-                              self.square_size,
-                              image=self.images.violet)]
+        squares = [
+            GridSquare(col + 1, row + 1, self.col_max, self.row_max,
+                       self.square_size,
+                       image=self.images.violet),
+            GridSquare(col + 1, row, self.col_max, self.row_max,
+                       self.square_size,
+                       image=self.images.violet),
+            GridSquare(col + 2, row + 1, self.col_max,
+                       self.row_max, self.square_size,
+                       image=self.images.violet),
+            GridSquare(col, row + 1, self.col_max,
+                       self.row_max, self.square_size,
+                       image=self.images.violet)
+        ]
         return TetrisFigure(squares, FigureType.T)
 
     def line(self, col: int, row: int) -> TetrisFigure:
-        squares = [GridSquare(col + 1, row, self.col_max, self.row_max,
-                              self.square_size,
-                              image=self.images.blue),
-                   GridSquare(col + 2, row, self.col_max,
-                              self.row_max, self.square_size,
-                              image=self.images.blue),
-                   GridSquare(col, row, self.col_max,
-                              self.row_max, self.square_size,
-                              image=self.images.blue),
-                   GridSquare(col + 3, row, self.col_max, self.row_max,
-                              self.square_size,
-                              image=self.images.blue)]
+        squares = [
+            GridSquare(col + 2, row, self.col_max,
+                       self.row_max, self.square_size,
+                       image=self.images.blue),
+            GridSquare(col + 1, row, self.col_max, self.row_max,
+                       self.square_size,
+                       image=self.images.blue),
+            GridSquare(col, row, self.col_max,
+                       self.row_max, self.square_size,
+                       image=self.images.blue),
+            GridSquare(col + 3, row, self.col_max, self.row_max,
+                       self.square_size,
+                       image=self.images.blue)
+        ]
         return TetrisFigure(squares, FigureType.LINE)
 
 
@@ -252,8 +261,10 @@ class FigureMovement:
         return True
 
     def rotate(self):
+        if self.figure.figure_type == FigureType.BRICK:
+            return
         new_coords = self._coords_after_rotation()
-        self._prevent_moving_up_after_rotation(new_coords)
+        # self._prevent_moving_up_after_rotation(new_coords)
         self._rotation_wall_bump(new_coords)
         self._rotation_outside_grid_prevention(new_coords)
         if self._intersects_with_other_squares(new_coords):
@@ -289,10 +300,8 @@ class FigureMovement:
             x.row -= min_row
 
     def _coords_after_rotation(self):
-        center_row = sum(
-            s.row for s in self.figure.squares) // len(self.figure.squares)
-        center_col = sum(
-            s.col for s in self.figure.squares) // len(self.figure.squares)
+        center_row = self.figure.squares[0].row
+        center_col = self.figure.squares[0].col
         new_coords = {}
         for square in self.figure.squares:
             relative_row = square.row - center_row

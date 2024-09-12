@@ -4,7 +4,7 @@ from enum import Enum
 from src.animation import AnimatorFactory
 from src.config import GameConfig
 from src.effects import SoundEffects
-from src.figures import TetrisFugureFactory, FigureMovement
+from src.figures import TetrisFigureFactory, FigureMovement
 from src.gaming_grid import GamingGrid
 from src.scoreboard import ScoreBoard
 
@@ -28,7 +28,7 @@ class TetrisGame:
             "Black",
             self.config.SQUARE_SIZE,
             self.animations)
-        self.figure_factory = TetrisFugureFactory(self.config.GRID_COLS,
+        self.figure_factory = TetrisFigureFactory(self.config.GRID_COLS,
                                                   self.config.GRID_ROWS,
                                                   self.config.SQUARE_SIZE)
         self.scoreboard = ScoreBoard(self.config, self.animations)

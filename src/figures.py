@@ -83,7 +83,7 @@ class TetrisFigure:
         return by_row.values()
 
 
-class TetrisFugureFactory:
+class TetrisFigureFactory:
 
     def __init__(self, col_max: int, row_max: int, square_size: int = 50):
         self.col_max = col_max

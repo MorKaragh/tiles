@@ -42,13 +42,13 @@ class ScoreBoard:
         self.body.blit(self.sample, (25, 25))
         pygame.draw.line(self.body, (5, 17, 22), (0, 0), (0, self.size[1]), 5)
         self.draw_score()
-        self.draw_lavel()
+        self.draw_level()
         self.body.blit(self.score_area, (25, self.body.get_size()[1] / 2))
         self.body.blit(self.level_area, (25, self.body.get_size()[
                        1] - self.level_area.get_size()[1]))
         screen.blit(self.body, self.coords)
 
-    def draw_lavel(self):
+    def draw_level(self):
         text = self.level_font.render(
             "LEVEL " + str(self.level), True, (255, 60, 99))
         rect = text.get_rect(

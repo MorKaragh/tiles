@@ -115,33 +115,43 @@ class TetrisFigureFactory:
                 return self.T(col, row)
 
     def brick(self, col: int, row: int) -> TetrisFigure:
-        squares = [GridSquare(col, row, self.col_max,
-                              self.row_max, self.square_size,
-                              image=self.images.yellow),
-                   GridSquare(col + 1, row, self.col_max,
-                              self.row_max, self.square_size,
-                              image=self.images.yellow),
-                   GridSquare(col, row + 1, self.col_max,
-                              self.row_max, self.square_size,
-                              image=self.images.yellow),
-                   GridSquare(col + 1, row + 1, self.col_max,
-                              self.row_max, self.square_size,
-                              image=self.images.yellow)]
+        squares = [
+            GridSquare(col, row, self.col_max,
+                       self.row_max, self.square_size,
+                       color="Y",
+                       image=self.images.yellow),
+            GridSquare(col + 1, row, self.col_max,
+                       self.row_max, self.square_size,
+                       color="Y",
+                       image=self.images.yellow),
+            GridSquare(col, row + 1, self.col_max,
+                       self.row_max, self.square_size,
+                       color="Y",
+                       image=self.images.yellow),
+            GridSquare(col + 1, row + 1, self.col_max,
+                       self.row_max, self.square_size,
+                       color="Y",
+                       image=self.images.yellow)
+        ]
         return TetrisFigure(squares, FigureType.BRICK)
 
     def L(self, col: int, row: int) -> TetrisFigure:
         squares = [
             GridSquare(col, row + 1, self.col_max,
                        self.row_max, self.square_size,
+                       color="R",
                        image=self.images.red),
             GridSquare(col, row, self.col_max,
                        self.row_max, self.square_size,
+                       color="R",
                        image=self.images.red),
             GridSquare(col, row + 2, self.col_max,
                        self.row_max, self.square_size,
+                       color="R",
                        image=self.images.red),
             GridSquare(col + 1, row + 2, self.col_max,
                        self.row_max, self.square_size,
+                       color="R",
                        image=self.images.red)]
         return TetrisFigure(squares, FigureType.L)
 
@@ -149,15 +159,19 @@ class TetrisFigureFactory:
         squares = [
             GridSquare(col + 1, row + 1, self.col_max,
                        self.row_max, self.square_size,
+                       color="B",
                        image=self.images.bluer),
             GridSquare(col + 1, row, self.col_max, self.row_max,
                        self.square_size,
+                       color="B",
                        image=self.images.bluer),
             GridSquare(col + 1, row + 2, self.col_max,
                        self.row_max, self.square_size,
+                       color="B",
                        image=self.images.bluer),
             GridSquare(col, row + 2, self.col_max, self.row_max,
                        self.square_size,
+                       color="B",
                        image=self.images.bluer)]
         return TetrisFigure(squares, FigureType.J)
 
@@ -165,15 +179,19 @@ class TetrisFigureFactory:
         squares = [
             GridSquare(col + 1, row + 1, self.col_max,
                        self.row_max, self.square_size,
+                       color="G",
                        image=self.images.green),
             GridSquare(col, row, self.col_max, self.row_max,
                        self.square_size,
+                       color="G",
                        image=self.images.green),
             GridSquare(col + 1, row, self.col_max,
                        self.row_max, self.square_size,
+                       color="G",
                        image=self.images.green),
             GridSquare(col + 2, row + 1, self.col_max, self.row_max,
                        self.square_size,
+                       color="G",
                        image=self.images.green)
         ]
         return TetrisFigure(squares, FigureType.S)
@@ -182,15 +200,19 @@ class TetrisFigureFactory:
         squares = [
             GridSquare(col + 1, row + 1, self.col_max, self.row_max,
                        self.square_size,
+                       color="P",
                        image=self.images.pink),
             GridSquare(col + 1, row, self.col_max, self.row_max,
                        self.square_size,
+                       color="P",
                        image=self.images.pink),
             GridSquare(col + 2, row, self.col_max,
                        self.row_max, self.square_size,
+                       color="P",
                        image=self.images.pink),
             GridSquare(col, row + 1, self.col_max,
                        self.row_max, self.square_size,
+                       color="P",
                        image=self.images.pink)
         ]
         return TetrisFigure(squares, FigureType.Z)
@@ -199,15 +221,19 @@ class TetrisFigureFactory:
         squares = [
             GridSquare(col + 1, row + 1, self.col_max, self.row_max,
                        self.square_size,
+                       color="V",
                        image=self.images.violet),
             GridSquare(col + 1, row, self.col_max, self.row_max,
                        self.square_size,
+                       color="V",
                        image=self.images.violet),
             GridSquare(col + 2, row + 1, self.col_max,
                        self.row_max, self.square_size,
+                       color="V",
                        image=self.images.violet),
             GridSquare(col, row + 1, self.col_max,
                        self.row_max, self.square_size,
+                       color="V",
                        image=self.images.violet)
         ]
         return TetrisFigure(squares, FigureType.T)
@@ -216,15 +242,19 @@ class TetrisFigureFactory:
         squares = [
             GridSquare(col + 2, row, self.col_max,
                        self.row_max, self.square_size,
+                       color="B",
                        image=self.images.blue),
             GridSquare(col + 1, row, self.col_max, self.row_max,
                        self.square_size,
+                       color="B",
                        image=self.images.blue),
             GridSquare(col, row, self.col_max,
                        self.row_max, self.square_size,
+                       color="B",
                        image=self.images.blue),
             GridSquare(col + 3, row, self.col_max, self.row_max,
                        self.square_size,
+                       color="B",
                        image=self.images.blue)
         ]
         return TetrisFigure(squares, FigureType.LINE)

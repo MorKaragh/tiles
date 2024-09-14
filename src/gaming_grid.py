@@ -223,6 +223,10 @@ class GamingGrid:
     def __repr__(self):
         return ";".join([f"{s.col}:{s.row}" for s in self.squares])
 
+    def get_state(self) -> str:
+        state = "".join([f"!{x.col}:{x.row}:{x.color}" for x in self.squares])
+        return state
+
     def set_state(self, state: str):
         self.clear()
         for coord in state.split(";"):

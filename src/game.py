@@ -5,7 +5,7 @@ from src.animation import AnimatorFactory
 from src.config import GameConfig
 from src.effects import SoundEffects
 from src.figures import TetrisFigureFactory, FigureMovement
-from src.multiplayer import MultiplayerClient
+from src.multiplayer import MultiplayerClient, MultiplayerThread
 from src.gaming_grid import GamingGrid
 from src.scoreboard import ScoreBoard
 
@@ -52,9 +52,19 @@ class TetrisGame:
         self.accelerate_fall = False
         self.side_move_delay = 0
         self.level_increase_limit = self.config.LEVEL_ROW_LIMIT
-        # self.multiplayer_client = MultiplayerClient("localhost", 8080)
+
+        self.multiplayer_client = MultiplayerClient("localhost", 8080)
         self.multiplayer_client.connect()
         self.multiplayer_exchange_rate = 0
+        self.opponent = GamingGrid(
+            self.config.GRID_COLS,
+            self.config.GRID_ROWS,
+            "Black",
+            self.config.SQUARE_SIZE // 2)
+        self.multiplayer_thread = MultiplayerThread(self.multiplayer_client,
+                                                    self.grid,
+                                                    self.opponent)
+        self.multiplayer_thread.start()
 
     def update(self):
         time_gap = time.time() - self.last_time
@@ -70,12 +80,12 @@ class TetrisGame:
             if not self.movements.move_down():
                 self._process_figure_landing()
 
-        if self.multiplayer_client:
-            if self.multiplayer_exchange_rate > 10:
-                self.multiplayer_client.exchange(self.grid.__repr__())
-                self.multiplayer_exchange_rate = 0
-            else:
-                self.multiplayer_exchange_rate += 1
+        # if self.multiplayer_client:
+        #     if self.multiplayer_exchange_rate > 10:
+        #         self.multiplayer_client.exchange(self.grid.get_state())
+        #         self.multiplayer_exchange_rate = 0
+        #     else:
+        #         self.multiplayer_exchange_rate += 1
 
     def reset(self):
         self.grid.clear()
@@ -87,6 +97,10 @@ class TetrisGame:
         self.running = True
         self.level = self.config.LEVEL
         self.fall_speed_factor = self.get_fall_speed_factor()
+
+    def terminate(self):
+        self.running = False
+        self.multiplayer_thread.terminate()
 
     def _process_figure_landing(self):
         self._process_full_rows()

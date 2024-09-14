@@ -40,8 +40,8 @@ def _process_keydown(event, game: TetrisGame, config: GameConfig):
 def process_events(events, game: TetrisGame, config: GameConfig):
     for event in events:
         if event.type == pygame.QUIT:
+            game.terminate()
             pygame.quit()
-            game.running = False
         elif event.type == pygame.KEYDOWN:
             _process_keydown(event, game, config)
         elif event.type == pygame.KEYUP:

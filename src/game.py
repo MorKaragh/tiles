@@ -53,20 +53,23 @@ class TetrisGame:
         self.side_move_delay = 0
         self.level_increase_limit = self.config.LEVEL_ROW_LIMIT
 
-        self.multiplayer_client = MultiplayerClient("localhost", 8080)
-        self.multiplayer_client.connect()
-        self.multiplayer_exchange_rate = 0
-        self.opponent = GamingGrid(
-            self.config.GRID_COLS,
-            self.config.GRID_ROWS,
-            "Black",
-            self.config.SQUARE_SIZE // 2)
-        self.multiplayer_thread = MultiplayerThread(self.multiplayer_client,
-                                                    self.grid,
-                                                    self.opponent)
-        self.multiplayer_thread.start()
+        if self.config.MULTIPLAYER:
+            self.multiplayer_client = MultiplayerClient("localhost", 8080)
+            self.multiplayer_client.connect()
+            self.opponent = GamingGrid(
+                self.config.GRID_COLS,
+                self.config.GRID_ROWS,
+                "Black",
+                self.config.SQUARE_SIZE)
+            self.multiplayer_thread = MultiplayerThread(
+                self.multiplayer_client,
+                self.grid,
+                self.opponent)
+            self.multiplayer_thread.start()
+            print("thread started")
 
     def update(self):
+        print("update")
         time_gap = time.time() - self.last_time
         self.last_fall_time = self.last_fall_time + time_gap
         self.last_move_time = self.last_move_time + time_gap
@@ -79,13 +82,6 @@ class TetrisGame:
             self.last_fall_time = 0
             if not self.movements.move_down():
                 self._process_figure_landing()
-
-        # if self.multiplayer_client:
-        #     if self.multiplayer_exchange_rate > 10:
-        #         self.multiplayer_client.exchange(self.grid.get_state())
-        #         self.multiplayer_exchange_rate = 0
-        #     else:
-        #         self.multiplayer_exchange_rate += 1
 
     def reset(self):
         self.grid.clear()

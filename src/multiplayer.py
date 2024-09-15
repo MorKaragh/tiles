@@ -30,6 +30,7 @@ class MultiplayerClient:
             self.socket.sendall(state.encode("ascii"))
             response = self.socket.recv(1024)
             print(response.decode('ascii'))
+            return response.decode("ascii")
         except Exception as e:
             print(e)
 
@@ -54,10 +55,11 @@ class MultiplayerThread(threading.Thread):
 
     def run(self):
         while self.running:
-            self.client.exchange(self.player_grid.get_state())
+            print("cycle")
+            e = self.client.exchange(self.player_grid.get_state())
+            self.opponent_grid.set_state(e)
             time.sleep(0.1)
 
     def terminate(self):
-        print("ouch!")
         self.running = False
         self.client.close()

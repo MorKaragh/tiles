@@ -9,9 +9,10 @@ from src.input_control import process_events, process_pressed_keys
 from src.utils import get_grid_state_logger
 
 config = GameConfig.load_default()
+config.MULTIPLAYER = True
 
 pygame.init()
-screen = pygame.display.set_mode(((config.GRID_COLS + 5) * config.SQUARE_SIZE,
+screen = pygame.display.set_mode((2 * (config.GRID_COLS + 5) * config.SQUARE_SIZE,
                                   config.GRID_ROWS * config.SQUARE_SIZE))
 pygame.display.set_caption("Tetris")
 pygame.display.set_icon(pygame.image.load("images/icon.png"))
@@ -29,6 +30,9 @@ bg = pygame.transform.scale(bg, (config.GRID_COLS * config.SQUARE_SIZE,
 
 main_menu = MainMenu(game)
 
+opponent_surf = Surface(((config.GRID_COLS + 5) * config.SQUARE_SIZE,
+                         config.GRID_ROWS * config.SQUARE_SIZE))
+
 while game.running:
     clock.tick(60)
     screen.fill("Black")
@@ -38,6 +42,10 @@ while game.running:
         game.update()
         game.grid.draw(screen)
         game.scoreboard.draw(screen)
+        opponent_surf.fill("Black")
+        game.opponent.draw(opponent_surf)
+        screen.blit(opponent_surf,
+                    ((config.GRID_COLS + 5) * config.SQUARE_SIZE, 0))
         if config.DEBUG:
             state_logger.info(game.grid.__repr__())
     elif game.state == GameState.PAUSE:

@@ -16,6 +16,7 @@ class GameConfig:
     LEVEL_ROW_LIMIT: int = field(default=10)
     SIDE_MOVE_SPEED_FACTOR: float = field(default=0.05)
     DEBUG: bool = field(default=False)
+    MULTIPLAYER: bool = field(default=False)
 
     def get_game_grid_size(self):
         return (self.GRID_COLS * self.SQUARE_SIZE,

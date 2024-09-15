@@ -32,7 +32,7 @@ main_menu = MainMenu(game)
 while game.running:
     clock.tick(60)
     screen.fill("Black")
-    screen.blit(bg, (0, 0))
+    pygame.draw.rect(screen, "darkmagenta", pygame.Rect(30, 30, 60, 60))
 
     if game.state == GameState.RUNNING:
         game.update()
@@ -57,3 +57,4 @@ while game.running:
     if game.state != GameState.MENU:
         process_pressed_keys(pygame.key.get_pressed(), game, config)
         process_events(pygame.event.get(), game, config)
+

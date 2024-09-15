@@ -81,7 +81,12 @@ class GridSquare(pygame.Rect):
         if self.image:
             screen.blit(self.image, self)
         else:
-            pygame.draw.rect(screen, self.color, self)
+            print("!" + self.color + "!")
+            print(type(self.color))
+            try:
+                pygame.draw.rect(screen, self.color, self)
+            except Exception:
+                pygame.draw.rect(screen, "White", self)
 
     def recalc_coords(self):
         self.x = self.col * self.sizepx
@@ -221,14 +226,13 @@ class GamingGrid:
         self.squares = []
 
     def __repr__(self):
-        return ";".join([f"{s.col}:{s.row}" for s in self.squares])
+        return ";".join([f"{x.col}:{x.row}:{x.color}" for x in self.squares])
 
     def get_state(self) -> str:
-        state = "".join([f"!{x.col}:{x.row}:{x.color}" for x in self.squares])
-        return state
+        return self.__repr__()
 
     def set_state(self, state: str):
         self.clear()
         for coord in state.split(";"):
-            x, y = coord.split(":")
-            self.add_new_square(int(x), int(y), "Black")
+            x, y, z = coord.split(":")
+            self.add_new_square(int(x), int(y), color=z)

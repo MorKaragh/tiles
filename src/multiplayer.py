@@ -28,14 +28,13 @@ class MultiplayerClient:
             return
         try:
             self.socket.sendall(state.encode("ascii"))
-            response = self.socket.recv(1024)
-            print(response.decode('ascii'))
-            return response.decode("ascii")
+            response = self.socket.recv(2048)
+            return response.decode("ascii").rstrip("\x00")
         except Exception as e:
             print(e)
+            print(f"response: {response}")
 
     def close(self):
-        print("try close")
         if self.socket:
             self.socket.close()
             print("closed connection")
@@ -55,7 +54,6 @@ class MultiplayerThread(threading.Thread):
 
     def run(self):
         while self.running:
-            print("cycle")
             e = self.client.exchange(self.player_grid.get_state())
             self.opponent_grid.set_state(e)
             time.sleep(0.1)

@@ -66,10 +66,8 @@ class TetrisGame:
                 self.grid,
                 self.opponent)
             self.multiplayer_thread.start()
-            print("thread started")
 
     def update(self):
-        print("update")
         time_gap = time.time() - self.last_time
         self.last_fall_time = self.last_fall_time + time_gap
         self.last_move_time = self.last_move_time + time_gap

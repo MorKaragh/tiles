@@ -32,7 +32,6 @@ main_menu = MainMenu(game)
 while game.running:
     clock.tick(60)
     screen.fill("Black")
-    pygame.draw.rect(screen, "darkmagenta", pygame.Rect(30, 30, 60, 60))
 
     if game.state == GameState.RUNNING:
         game.update()

@@ -1,10 +1,10 @@
 import socket
+import struct
 import threading
+import traceback
 import time
 
 from src.gaming_grid import GamingGrid
-
-from typing import Callable
 
 
 class MultiplayerClient:
@@ -27,12 +27,19 @@ class MultiplayerClient:
             print("no connection")
             return
         try:
-            self.socket.sendall(state.encode("ascii"))
-            response = self.socket.recv(2048)
-            return response.decode("ascii").rstrip("\x00")
+            state_message = state.encode("ascii")
+            length = len(state_message)
+            header = struct.pack("!I", length)
+            self.socket.sendall(header)
+            self.socket.sendall(state_message)
+            result = ""
+            # input = self.socket.recv(1024)
+            # while (input):
+            #     result += input.decode("ascii").rstrip("\x00")
+            #     input = self.socket.recv(1024)
+            return result
         except Exception as e:
             print(e)
-            print(f"response: {response}")
 
     def close(self):
         if self.socket:
@@ -55,7 +62,11 @@ class MultiplayerThread(threading.Thread):
     def run(self):
         while self.running:
             e = self.client.exchange(self.player_grid.get_state())
-            self.opponent_grid.set_state(e)
+            if e:
+                try:
+                    self.opponent_grid.set_state(e)
+                except Exception:
+                    traceback.print_exc()
             time.sleep(0.1)
 
     def terminate(self):

@@ -33,15 +33,8 @@ class TetrisGame:
                                                   self.config.GRID_ROWS,
                                                   self.config.SQUARE_SIZE)
         self.scoreboard = ScoreBoard(self.config, self.animations)
-        self.player = self.figure_factory.random(self.grid.get_center_x(), 0)
-        self.next_player = self.figure_factory.random()
-        self.movements = FigureMovement(self.next_player, self.grid)
-        self.movements.rotate_randomly(move_to_corner=True)
-        self.movements.move_to_top()
-        self.scoreboard.set_next_figure(self.next_player)
-        self.movements.figure = self.player
-        self.movements.rotate_randomly()
-        self.player.add_on_grid(self.grid)
+        self.movements = FigureMovement(self.grid)
+        self._create_first_figures()
         self.state = GameState.RUNNING
         self.running = True
         self.level = self.config.LEVEL
@@ -53,6 +46,7 @@ class TetrisGame:
         self.side_move_delay = 0
         self.level_increase_limit = self.config.LEVEL_ROW_LIMIT
 
+        self.multiplayer_thread = None
         if self.config.MULTIPLAYER:
             self.opponent = GamingGrid(
                 self.config.GRID_COLS,
@@ -82,7 +76,8 @@ class TetrisGame:
         self.grid.clear()
         self.player = self.figure_factory.random(self.grid.get_center_x(), 0)
         self.scoreboard.reset()
-        self.movements = FigureMovement(self.player, self.grid)
+        self.movements = FigureMovement(self.grid)
+        self.movements.figure = self.player
         self.player.add_on_grid(self.grid)
         self.state = GameState.RUNNING
         self.running = True
@@ -91,7 +86,8 @@ class TetrisGame:
 
     def terminate(self):
         self.running = False
-        self.multiplayer_thread.terminate()
+        if self.multiplayer_thread:
+            self.multiplayer_thread.terminate()
 
     def _process_figure_landing(self):
         self._process_full_rows()
@@ -138,6 +134,17 @@ class TetrisGame:
             self.state = GameState.LOSS
         else:
             self.player.add_on_grid(self.grid)
+
+    def _create_first_figures(self):
+        self.player = self.figure_factory.random(self.grid.get_center_x(), 0)
+        self.next_player = self.figure_factory.random()
+        self.movements.figure = self.next_player
+        self.movements.rotate_randomly(move_to_corner=True)
+        self.movements.move_to_top()
+        self.movements.figure = self.player
+        self.movements.rotate_randomly()
+        self.player.add_on_grid(self.grid)
+        self.scoreboard.set_next_figure(self.next_player)
 
     def _calc_score(self, rows_cnt):
         return self.level * 100 * rows_cnt * rows_cnt // 2

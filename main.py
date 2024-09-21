@@ -1,5 +1,4 @@
 import pygame
-from pygame import Surface
 
 from src import records
 from src.config import GameConfig
@@ -9,6 +8,7 @@ from src.input_control import process_events, process_pressed_keys
 from src.utils import get_grid_state_logger
 
 config = GameConfig.load_default()
+config.MULTIPLAYER = False
 
 pygame.init()
 screen = pygame.display.set_mode(((config.GRID_COLS + 5) * config.SQUARE_SIZE,

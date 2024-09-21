@@ -262,8 +262,7 @@ class TetrisFigureFactory:
 
 class FigureMovement:
 
-    def __init__(self, player, grid):
-        self.figure = player
+    def __init__(self, grid):
         self.grid = grid
 
     def move_down(self):

@@ -57,23 +57,28 @@ class MultiplayerClient:
 class MultiplayerThread(threading.Thread):
 
     def __init__(self,
-                 client: MultiplayerClient,
                  player_grid: GamingGrid,
                  opponent_grid: GamingGrid):
         threading.Thread.__init__(self)
-        self.client = client
+        self.client = MultiplayerClient("localhost", 8080)
+        self.client.connect()
         self.player_grid = player_grid
         self.opponent_grid = opponent_grid
         self.running = True
+        self.state = "ROOM"
 
     def run(self):
         while self.running:
-            e = self.client.exchange(self.player_grid.get_state())
-            if e:
-                try:
-                    self.opponent_grid.set_state(e)
-                except Exception:
-                    traceback.print_exc()
+            if self.state == "ROOM":
+                e = self.client.exchange("ROOM:TESTROOM:PLAYER")
+                print(e)
+            elif self.state == "PLAYING":
+                e = self.client.exchange(self.player_grid.get_state())
+                if e:
+                    try:
+                        self.opponent_grid.set_state(e)
+                    except Exception:
+                        traceback.print_exc()
             time.sleep(0.05)
 
     def terminate(self):

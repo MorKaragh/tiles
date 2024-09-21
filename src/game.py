@@ -54,15 +54,12 @@ class TetrisGame:
         self.level_increase_limit = self.config.LEVEL_ROW_LIMIT
 
         if self.config.MULTIPLAYER:
-            self.multiplayer_client = MultiplayerClient("localhost", 8080)
-            self.multiplayer_client.connect()
             self.opponent = GamingGrid(
                 self.config.GRID_COLS,
                 self.config.GRID_ROWS,
                 "Black",
                 self.config.SQUARE_SIZE)
             self.multiplayer_thread = MultiplayerThread(
-                self.multiplayer_client,
                 self.grid,
                 self.opponent)
             self.multiplayer_thread.start()

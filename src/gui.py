@@ -9,20 +9,39 @@ from src.records import load_for_player
 from src.game import TetrisGame
 
 
+def default_theme():
+    MENU_FONT = pygame.font.Font("fonts/Oldtimer-GOPpg.ttf", 20)
+    MENU_THEME = Theme(
+        background_color=(0, 0, 0, 0),
+        title=False,
+        widget_padding=25,
+        widget_font=MENU_FONT)
+    return MENU_THEME
+
+
+class MultiplayerMenu:
+
+    def __init__(self, game: TetrisGame):
+        self.font = pygame.font.Font("fonts/Oldtimer-GOPpg.ttf", 20)
+        self.game = game
+        self.menu = Menu(
+            height=self.game.config.get_game_grid_size()[1],
+            theme=default_theme(),
+            width=400,
+            title=''
+        )
+
+
 class MainMenu:
 
     def __init__(self, game: TetrisGame):
         self.font = pygame.font.Font("fonts/Oldtimer-GOPpg.ttf", 20)
-        self.mytheme = Theme(background_color=(0, 0, 0, 0),
-                             title=False,
-                             widget_padding=25,
-                             widget_font=self.font)
         self.game = game
         self.menu = Menu(
             height=self.game.config.get_game_grid_size()[1],
-            theme=self.mytheme,
-            title='',
-            width=400
+            theme=default_theme(),
+            width=400,
+            title=''
         )
         player = self.game.config.PLAYER
         self.user_name = self.menu.add.text_input('Name: ',

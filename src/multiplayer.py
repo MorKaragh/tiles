@@ -22,22 +22,29 @@ class MultiplayerClient:
         except Exception as e:
             print(e)
 
+    def send_message(self, msg: str):
+        message = msg.encode("ascii")
+        length = len(message)
+        header = struct.pack("!I", length)
+        self.socket.sendall(header)
+        self.socket.sendall(message)
+
+    def receive_message(self):
+        header = self.socket.recv(4)
+        message_length = struct.unpack("!I", header)[0]
+        message = b''
+        while len(message) < message_length:
+            chunk = self.socket.recv(message_length - len(message))
+            message += chunk
+        return message.decode("ascii")
+
     def exchange(self, state: str):
         if not self.socket:
             print("no connection")
             return
         try:
-            state_message = state.encode("ascii")
-            length = len(state_message)
-            header = struct.pack("!I", length)
-            self.socket.sendall(header)
-            self.socket.sendall(state_message)
-            result = ""
-            # input = self.socket.recv(1024)
-            # while (input):
-            #     result += input.decode("ascii").rstrip("\x00")
-            #     input = self.socket.recv(1024)
-            return result
+            self.send_message(state)
+            return self.receive_message()
         except Exception as e:
             print(e)
 
@@ -67,7 +74,7 @@ class MultiplayerThread(threading.Thread):
                     self.opponent_grid.set_state(e)
                 except Exception:
                     traceback.print_exc()
-            time.sleep(0.1)
+            time.sleep(0.05)
 
     def terminate(self):
         self.running = False

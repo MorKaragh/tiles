@@ -84,10 +84,7 @@ class GridSquare(pygame.Rect):
         else:
             try:
                 pygame.draw.rect(screen, color=pygame.color.Color(self.color), rect=self)
-                print(f"OK color: {self.color};{str.encode(self.color)} {type(self.color)}")
             except Exception:
-                print(traceback.format_exc())
-                print(f"ER color: {self.color};{str.encode(self.color)} {type(self.color)}")
                 pygame.draw.rect(screen, "White", self)
 
     def recalc_coords(self):
@@ -234,7 +231,6 @@ class GamingGrid:
         return self.__repr__()
 
     def set_state(self, state: str):
-        print(state)
         self.clear()
         for coord in state.split(";"):
             x, y, z = coord.split(":")

@@ -71,7 +71,8 @@ class MultiplayerThread(threading.Thread):
         while self.running:
             if self.state == "ROOM":
                 e = self.client.exchange("ROOM:TESTROOM:PLAYER")
-                print(e)
+                if e == "WFS":
+                    self.state = "PLAYING"
             elif self.state == "PLAYING":
                 e = self.client.exchange(self.player_grid.get_state())
                 if e:
@@ -79,8 +80,9 @@ class MultiplayerThread(threading.Thread):
                         self.opponent_grid.set_state(e)
                     except Exception:
                         traceback.print_exc()
-            time.sleep(0.05)
+            time.sleep(0.1)
 
     def terminate(self):
         self.running = False
+        self.client.exchange("QUIT")
         self.client.close()

@@ -78,7 +78,7 @@ class MultiplayerThread(threading.Thread):
                 print(e)
             elif self.state == "PLAYING":
                 e = self.client.exchange(self.player_grid.get_state())
-                print("received" + str(e))
+                print("received " + str(e))
                 if e:
                     try:
                         self.opponent_grid.set_state(e)

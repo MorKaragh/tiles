@@ -31,6 +31,8 @@ class MultiplayerClient:
 
     def receive_message(self):
         header = self.socket.recv(4)
+        if not header:
+            return None
         message_length = struct.unpack("!I", header)[0]
         message = b''
         while len(message) < message_length:
@@ -73,8 +75,10 @@ class MultiplayerThread(threading.Thread):
                 e = self.client.exchange("ROOM:TESTROOM:PLAYER")
                 if e == "WFS":
                     self.state = "PLAYING"
+                print(e)
             elif self.state == "PLAYING":
                 e = self.client.exchange(self.player_grid.get_state())
+                print("received" + str(e))
                 if e:
                     try:
                         self.opponent_grid.set_state(e)

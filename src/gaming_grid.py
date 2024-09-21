@@ -7,6 +7,27 @@ from pygame import Surface
 from src.animation import AnimatorFactory, Animator
 
 
+to_color_mapping = {
+    "y": "yellow",
+    "r": "red",
+    "b": "blue",
+    "g": "green",
+    "d": "deeppink",
+    "m": "darkmagenta",
+    "o": "dodgerblue",
+}
+
+color_mapping = {
+    "yellow": "y",
+    "red": "r",
+    "blue": "b",
+    "green": "g",
+    "deeppink": "d",
+    "darkmagenta": "m",
+    "dodgerblue": "o",
+}
+
+
 class SquareImages:
     def __init__(self, square_size_px: int):
         self.square_size_px = square_size_px
@@ -83,7 +104,8 @@ class GridSquare(pygame.Rect):
             screen.blit(self.image, self)
         else:
             try:
-                pygame.draw.rect(screen, color=pygame.color.Color(self.color), rect=self)
+                pygame.draw.rect(
+                    screen, color=pygame.color.Color(self.color), rect=self)
             except Exception:
                 pygame.draw.rect(screen, "White", self)
 
@@ -225,7 +247,8 @@ class GamingGrid:
         self.squares = []
 
     def __repr__(self):
-        return ";".join([f"{x.col}:{x.row}:{x.color}" for x in self.squares])
+        return ";".join([f"{x.col}:{x.row}:{color_mapping[x.color]}"
+                         for x in self.squares])
 
     def get_state(self) -> str:
         return self.__repr__()
@@ -234,4 +257,4 @@ class GamingGrid:
         self.clear()
         for coord in state.split(";"):
             x, y, z = coord.split(":")
-            self.add_new_square(int(x), int(y), color=z)
+            self.add_new_square(int(x), int(y), color=to_color_mapping[z])

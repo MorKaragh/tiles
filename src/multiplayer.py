@@ -4,7 +4,14 @@ import threading
 import traceback
 import time
 
+from src.game import TetrisGame
 from src.gaming_grid import GamingGrid
+
+
+class ConnectionStatus:
+
+    def __init__(self):
+        self.value = "IDLE"
 
 
 class MultiplayerClient:
@@ -59,23 +66,24 @@ class MultiplayerClient:
 class MultiplayerThread(threading.Thread):
 
     def __init__(self,
+                 connection_status: ConnectionStatus,
                  player_grid: GamingGrid,
-                 opponent_grid: GamingGrid):
+                 opponent_grid: GamingGrid,
+                 host: str = "localhost",
+                 port: int = 8080):
         threading.Thread.__init__(self)
-        self.client = MultiplayerClient("localhost", 8080)
+        self.connection_status = connection_status
+        self.client = MultiplayerClient(host, port)
         self.client.connect()
         self.player_grid = player_grid
         self.opponent_grid = opponent_grid
         self.running = True
-        self.state = "ROOM"
 
     def run(self):
         while self.running:
-            if self.state == "ROOM":
+            if self.status.value != "PLAYING":
                 e = self.client.exchange("ROOM:TESTROOM:PLAYER")
-                if e == "WFS":
-                    self.state = "PLAYING"
-                print(e)
+                self.status.value = e
             elif self.state == "PLAYING":
                 e = self.client.exchange(self.player_grid.get_state())
                 print("received " + str(e))
@@ -90,3 +98,18 @@ class MultiplayerThread(threading.Thread):
         self.running = False
         self.client.exchange("QUIT")
         self.client.close()
+
+
+class Multiplayer:
+
+    def __init__(self,
+                 game: TetrisGame):
+        self.game = game
+        self.thread = MultiplayerThread(game.grid, game.opponent)
+        self.active = False
+        self.status = ConnectionStatus()
+
+    def connect_to_room(self):
+        if not self.active:
+            self.thread.start()
+            self.active = True

@@ -5,6 +5,7 @@ import pygame_menu
 from pygame import font, Surface
 from pygame_menu import Theme, Menu
 
+from src.multiplayer import Multiplayer
 from src.records import load_for_player
 from src.game import TetrisGame
 
@@ -21,15 +22,59 @@ def default_theme():
 
 class MultiplayerMenu:
 
-    def __init__(self, game: TetrisGame):
+    def __init__(self, multiplayer: Multiplayer):
         self.font = pygame.font.Font("fonts/Oldtimer-GOPpg.ttf", 20)
-        self.game = game
+        self.multiplayer = multiplayer
+        self.game = multiplayer.game
         self.menu = Menu(
             height=self.game.config.get_game_grid_size()[1],
             theme=default_theme(),
             width=400,
             title=''
         )
+        player = self.game.config.PLAYER
+        self.user_name = self.menu.add.text_input('Name: ',
+                                                  default=player,
+                                                  maxchar=10,
+                                                  onchange=self.change_player)
+        self.menu.add.range_slider("Level:",
+                                   range_values=[i for i in range(1, 31)],
+                                   increment=1,
+                                   default=self.game.config.LEVEL,
+                                   range_text_value_enabled=False,
+                                   onchange=self.change_level)
+        autochange = 0 if self.game.config.LEVEL_INCREASE else 1
+        self.menu.add.selector('Level auto change: ',
+                               [('Yes', True), ('No', False)],
+                               onchange=self.set_lvl_auto_change,
+                               default=autochange)
+        self.menu.add.text_input('Room: ',
+                                 default='roomname',
+                                 maxchar=10,
+                                 onchange=self.change_room)
+        self.run_btn = self.menu.add.button('Connect', self.start_the_game)
+        self.menu.add.button('Quit', pygame_menu.events.EXIT)
+
+    def set_lvl_auto_change(self, selected: Tuple, value: Any) -> None:
+        self.game.config.LEVEL_INCREASE = value
+
+    def start_the_game(self) -> None:
+        if self.multiplayer.status == "READY":
+            self.game.reset()
+            self.game.config.save()
+            self.menu.close()
+        else:
+            self.multiplayer.connect_to_room()
+
+    def change_level(self, val: int) -> None:
+        self.game.config.LEVEL = val
+        self.game.set_level(val)
+
+    def change_player(self, val: str):
+        self.game.config.PLAYER = val
+
+    def change_room(self, val: str):
+        self.multiplayer.ROOM_NAME = val
 
 
 class MainMenu:

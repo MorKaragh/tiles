@@ -78,8 +78,6 @@ class TetrisGame:
 
     def terminate(self):
         self.running = False
-        if self.multiplayer_thread:
-            self.multiplayer_thread.terminate()
 
     def _process_figure_landing(self):
         self._process_full_rows()

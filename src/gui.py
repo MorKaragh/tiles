@@ -55,6 +55,12 @@ class MultiplayerMenu:
         self.run_btn = self.menu.add.button('Connect', self.start_the_game)
         self.menu.add.button('Quit', pygame_menu.events.EXIT)
 
+    def update(self):
+        if self.multiplayer.status.value == "WFP":
+            self.run_btn.set_title("Waiting for player")
+        elif self.multiplayer.status.value == "WFS":
+            self.run_btn.set_title("Start")
+
     def set_lvl_auto_change(self, selected: Tuple, value: Any) -> None:
         self.game.config.LEVEL_INCREASE = value
 

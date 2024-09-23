@@ -4,7 +4,7 @@ from pygame import Surface
 from src import records
 from src.config import GameConfig
 from src.game import TetrisGame, GameState
-from src.gui import StateScreen, MainMenu
+from src.gui import StateScreen, MultiplayerMenu
 from src.input_control import process_events, process_pressed_keys
 from src.multiplayer import Multiplayer
 from src.utils import get_grid_state_logger
@@ -32,7 +32,7 @@ bg = pygame.image.load("images/bg.png").convert_alpha()
 bg = pygame.transform.scale(bg, (config.GRID_COLS * config.SQUARE_SIZE,
                                  config.GRID_ROWS * config.SQUARE_SIZE))
 
-main_menu = MainMenu(game)
+main_menu = MultiplayerMenu(multiplayer)
 
 opponent_surf = Surface(((config.GRID_COLS + 5) * config.SQUARE_SIZE,
                          config.GRID_ROWS * config.SQUARE_SIZE))
@@ -61,6 +61,7 @@ while game.running:
     elif game.state == GameState.MENU:
         events = pygame.event.get()
         screen.fill("Black")
+        main_menu.update()
         main_menu.menu.update(events)
         main_menu.menu.draw(screen)
 

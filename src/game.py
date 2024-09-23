@@ -5,7 +5,6 @@ from src.animation import AnimatorFactory
 from src.config import GameConfig
 from src.effects import SoundEffects
 from src.figures import TetrisFigureFactory, FigureMovement
-from src.multiplayer import MultiplayerClient, MultiplayerThread
 from src.gaming_grid import GamingGrid
 from src.scoreboard import ScoreBoard
 
@@ -45,18 +44,11 @@ class TetrisGame:
         self.accelerate_fall = False
         self.side_move_delay = 0
         self.level_increase_limit = self.config.LEVEL_ROW_LIMIT
-
-        self.multiplayer_thread = None
-        if self.config.MULTIPLAYER:
-            self.opponent = GamingGrid(
-                self.config.GRID_COLS,
-                self.config.GRID_ROWS,
-                "Black",
-                self.config.SQUARE_SIZE)
-            self.multiplayer_thread = MultiplayerThread(
-                self.grid,
-                self.opponent)
-            self.multiplayer_thread.start()
+        self.opponent = GamingGrid(
+            self.config.GRID_COLS,
+            self.config.GRID_ROWS,
+            "Black",
+            self.config.SQUARE_SIZE)
 
     def update(self):
         time_gap = time.time() - self.last_time

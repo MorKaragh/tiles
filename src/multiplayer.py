@@ -72,7 +72,7 @@ class MultiplayerThread(threading.Thread):
                  host: str = "localhost",
                  port: int = 8080):
         threading.Thread.__init__(self)
-        self.connection_status = connection_status
+        self.status = connection_status
         self.client = MultiplayerClient(host, port)
         self.client.connect()
         self.player_grid = player_grid
@@ -105,9 +105,9 @@ class Multiplayer:
     def __init__(self,
                  game: TetrisGame):
         self.game = game
-        self.thread = MultiplayerThread(game.grid, game.opponent)
         self.active = False
         self.status = ConnectionStatus()
+        self.thread = MultiplayerThread(self.status, game.grid, game.opponent)
 
     def connect_to_room(self):
         if not self.active:

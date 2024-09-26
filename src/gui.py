@@ -65,11 +65,14 @@ class MultiplayerMenu:
         self.game.config.LEVEL_INCREASE = value
 
     def start_the_game(self) -> None:
-        if self.multiplayer.status == "READY":
+        print(self.multiplayer.status)
+        if self.multiplayer.status.value == "READY":
             self.game.reset()
             self.game.config.save()
             self.menu.close()
-        else:
+        elif self.multiplayer.status.value == "WFS":
+            self.multiplayer.launch_game()
+        elif self.multiplayer.status.value == "IDLE":
             self.multiplayer.connect_to_room()
 
     def change_level(self, val: int) -> None:

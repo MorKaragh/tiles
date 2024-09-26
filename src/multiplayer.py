@@ -81,12 +81,16 @@ class MultiplayerThread(threading.Thread):
 
     def run(self):
         while self.running:
-            if self.status.value != "PLAYING":
+            print(self.status.value)
+            if self.status.value in ["WFP", "WFS", "IDLE"]:
                 e = self.client.exchange("ROOM:TESTROOM:PLAYER")
                 self.status.value = e
-            elif self.state == "PLAYING":
+            elif self.status.value == "READY":
+                e = self.client.exchange("READY")
+                if e == "START":
+                    self.status.value = "PLAYING"
+            elif self.status.value == "PLAYING":
                 e = self.client.exchange(self.player_grid.get_state())
-                print("received " + str(e))
                 if e:
                     try:
                         self.opponent_grid.set_state(e)
@@ -113,3 +117,6 @@ class Multiplayer:
         if not self.active:
             self.thread.start()
             self.active = True
+
+    def launch_game(self):
+        self.status.value = "READY"

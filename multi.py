@@ -46,7 +46,7 @@ while game.running:
         game.update()
         game.grid.draw(screen)
         game.scoreboard.draw(screen)
-        opponent_surf.fill("Black")
+        opponent_surf.fill("Grey")
         game.opponent.draw(opponent_surf)
         screen.blit(opponent_surf,
                     ((config.GRID_COLS + 5) * config.SQUARE_SIZE, 0))

@@ -87,7 +87,7 @@ class MultiplayerThread(threading.Thread):
                 self.status.value = e
             elif self.status.value == "READY":
                 e = self.client.exchange("READY")
-                if e == "START":
+                if e == "GO":
                     self.status.value = "PLAYING"
             elif self.status.value == "PLAYING":
                 e = self.client.exchange(self.player_grid.get_state())
@@ -118,5 +118,5 @@ class Multiplayer:
             self.thread.start()
             self.active = True
 
-    def launch_game(self):
+    def set_ready(self):
         self.status.value = "READY"

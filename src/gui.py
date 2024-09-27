@@ -9,6 +9,8 @@ from src.multiplayer import Multiplayer
 from src.records import load_for_player
 from src.game import TetrisGame
 
+connect_button_labels = {}
+
 
 def default_theme():
     MENU_FONT = pygame.font.Font("fonts/Oldtimer-GOPpg.ttf", 20)
@@ -56,24 +58,32 @@ class MultiplayerMenu:
         self.menu.add.button('Quit', pygame_menu.events.EXIT)
 
     def update(self):
-        if self.multiplayer.status.value == "WFP":
-            self.run_btn.set_title("Waiting for player")
-        elif self.multiplayer.status.value == "WFS":
-            self.run_btn.set_title("Start")
+        match self.multiplayer.status.value:
+            case "IDLE":
+                self.run_btn.set_title("CONNECT")
+            case "WFP":
+                self.run_btn.set_title("WAITING FOR PLAYER")
+            case "WFS":
+                self.run_btn.set_title("READY")
+            case "PLAYING":
+                self.run_btn.set_title("START")
+            case _:
+                self.run_btn.set_title(self.multiplayer.status.value)
 
     def set_lvl_auto_change(self, selected: Tuple, value: Any) -> None:
         self.game.config.LEVEL_INCREASE = value
 
     def start_the_game(self) -> None:
         print(self.multiplayer.status)
-        if self.multiplayer.status.value == "READY":
-            self.game.reset()
-            self.game.config.save()
-            self.menu.close()
-        elif self.multiplayer.status.value == "WFS":
-            self.multiplayer.launch_game()
-        elif self.multiplayer.status.value == "IDLE":
-            self.multiplayer.connect_to_room()
+        match self.multiplayer.status.value:
+            case "PLAYING":
+                self.game.reset()
+                self.game.config.save()
+                self.menu.close()
+            case "WFS":
+                self.multiplayer.set_ready()
+            case "IDLE":
+                self.multiplayer.connect_to_room()
 
     def change_level(self, val: int) -> None:
         self.game.config.LEVEL = val

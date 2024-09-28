@@ -29,14 +29,15 @@ class AnimationSprites:
     def __init__(self):
         self.puff_sprites = None
 
-    def get_puff_sprites(self) -> List[Surface]:
+    def get_puff_sprites(self, width: int) -> List[Surface]:
         if self.puff_sprites:
             return self.puff_sprites
         puff = Spritesheet("images/puff_anim_yellow.png", (192, 192))
         sprites = []
         for i in range(4, 7):
             for j in range(5):
-                img = pygame.transform.scale(puff.get_sprite((i, j)), (50, 50))
+                img = pygame.transform.scale(
+                    puff.get_sprite((i, j)), (width, width))
                 sprites.append(img)
         self.puff_sprites = sprites
         return self.puff_sprites
@@ -135,8 +136,11 @@ class AnimatorFactory:
     def __init__(self):
         self.sprites = AnimationSprites()
 
-    def get_square_puff(self, coords: Tuple[int, int], delay: int = 0):
-        return Animator(self.sprites.get_puff_sprites(), coords, delay)
+    def get_square_puff(self,
+                        coords: Tuple[int, int],
+                        delay: int = 0,
+                        width: int = 50):
+        return Animator(self.sprites.get_puff_sprites(width), coords, delay)
 
     def get_gold_frame_amin(self, width: int):
         return CyclingAnimation(self.sprites.get_gold_frame_sprites(width), 5)

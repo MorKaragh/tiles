@@ -36,28 +36,40 @@ main_menu = MultiplayerMenu(multiplayer)
 
 opponent_surf = Surface(((config.GRID_COLS + 5) * config.SQUARE_SIZE,
                          config.GRID_ROWS * config.SQUARE_SIZE))
+player_surf = Surface(((config.GRID_COLS + 5) * config.SQUARE_SIZE,
+                       config.GRID_ROWS * config.SQUARE_SIZE))
+
+
+def display_running():
+    game.update()
+    game.grid.draw(player_surf)
+    game.scoreboard.draw(player_surf)
+    game.opponent.draw(opponent_surf)
+    screen.blit(player_surf, (0, 0))
+    screen.blit(opponent_surf,
+                ((config.GRID_COLS + 5) * config.SQUARE_SIZE, 0))
+    if config.DEBUG:
+        state_logger.info(game.grid.__repr__())
+
 
 while game.running:
     clock.tick(60)
     screen.fill("Black")
-    screen.blit(bg, (0, 0))
+    player_surf.fill("Black")
+    opponent_surf.fill("Grey")
+    player_surf.blit(bg, (0, 0))
 
     if game.state == GameState.RUNNING:
-        game.update()
-        game.grid.draw(screen)
-        game.scoreboard.draw(screen)
-        opponent_surf.fill("Grey")
-        game.opponent.draw(opponent_surf)
-        screen.blit(opponent_surf,
-                    ((config.GRID_COLS + 5) * config.SQUARE_SIZE, 0))
-        if config.DEBUG:
-            state_logger.info(game.grid.__repr__())
+        display_running()
     elif game.state == GameState.PAUSE:
         game.grid.draw(screen)
         game.scoreboard.draw(screen)
     elif game.state == GameState.LOSS:
-        records.save(game.config.PLAYER, game.scoreboard.score)
-        StateScreen.draw_loss(screen, game)
+        game.opponent.draw(opponent_surf)
+        StateScreen.draw_loss(player_surf, game)
+        screen.blit(player_surf, (0, 0))
+        screen.blit(opponent_surf,
+                    ((config.GRID_COLS + 5) * config.SQUARE_SIZE, 0))
     elif game.state == GameState.MENU:
         events = pygame.event.get()
         screen.fill("Black")

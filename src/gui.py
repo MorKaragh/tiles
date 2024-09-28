@@ -65,6 +65,8 @@ class MultiplayerMenu:
                 self.run_btn.set_title("WAITING FOR PLAYER")
             case "WFS":
                 self.run_btn.set_title("READY")
+            case "WFR":
+                self.run_btn.set_title("READY")
             case "PLAYING":
                 self.run_btn.set_title("START")
             case _:
@@ -81,6 +83,8 @@ class MultiplayerMenu:
                 self.game.config.save()
                 self.menu.close()
             case "WFS":
+                self.multiplayer.set_ready()
+            case "WFR":
                 self.multiplayer.set_ready()
             case "IDLE":
                 self.multiplayer.connect_to_room()

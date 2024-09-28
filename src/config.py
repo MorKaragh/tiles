@@ -10,7 +10,7 @@ class GameConfig:
     PLAYER: str = field(default="Player")
     GRID_ROWS: int = field(default=20)
     GRID_COLS: int = field(default=10)
-    SQUARE_SIZE: int = field(default=50)
+    SQUARE_SIZE: int = field(default=30)
     LEVEL: int = field(default=10)
     LEVEL_INCREASE: bool = field(default=True)
     LEVEL_ROW_LIMIT: int = field(default=10)

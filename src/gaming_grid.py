@@ -225,7 +225,8 @@ class GamingGrid:
         for row in rows:
             for i in range(self.cols):
                 coords = (i * self.square_width, self.square_width * row)
-                anim = self.animator_factory.get_square_puff(coords)
+                anim = self.animator_factory.get_square_puff(
+                    coords, width=self.square_width)
                 anim.related_object = self.get_square_in(i, row)
                 animations.append(anim)
         self.rows_removal_anim = RowRemovalAnimation(rows, animations)

@@ -1,6 +1,7 @@
 import pygame
 
 from src.game import GameState, TetrisGame, GameConfig
+from src.multiplayer import Multiplayer
 
 
 def process_pressed_keys(pressed, game, config):
@@ -37,11 +38,16 @@ def _process_keydown(event, game: TetrisGame, config: GameConfig):
             game.state = GameState.PAUSE
 
 
-def process_events(events, game: TetrisGame, config: GameConfig):
+def process_events(events, game: TetrisGame,
+                   config: GameConfig,
+                   multiplayer: Multiplayer = None):
     for event in events:
         if event.type == pygame.QUIT:
+            print("QUITTING GAME")
             game.terminate()
             pygame.quit()
+            if multiplayer:
+                multiplayer.terminate()
         elif event.type == pygame.KEYDOWN:
             _process_keydown(event, game, config)
         elif event.type == pygame.KEYUP:

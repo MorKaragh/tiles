@@ -120,3 +120,6 @@ class Multiplayer:
 
     def set_ready(self):
         self.status.value = "READY"
+
+    def terminate(self):
+        self.thread.terminate()

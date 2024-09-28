@@ -81,4 +81,4 @@ while game.running:
 
     if game.state != GameState.MENU:
         process_pressed_keys(pygame.key.get_pressed(), game, config)
-        process_events(pygame.event.get(), game, config)
+        process_events(pygame.event.get(), game, config, multiplayer)

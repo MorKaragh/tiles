@@ -3,7 +3,8 @@ import pygame
 from src import records
 from src.config import GameConfig
 from src.game import TetrisGame, GameState
-from src.gui import StateScreen, MainMenu
+from src.gui import MainMenu
+from src.state_screen import StateScreen
 from src.input_control import process_events, process_pressed_keys
 from src.utils import get_grid_state_logger
 

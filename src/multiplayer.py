@@ -8,12 +8,14 @@ from pygame import Surface
 from src.game import TetrisGame
 from src.gaming_grid import GamingGrid
 from src.scoreboard import ScoreBoard
+from src.state_screen import StateScreen
 
 
 class ConnectionStatus:
 
     def __init__(self):
         self.value = "IDLE"
+        self.opponent_result = None
 
 
 class MultiplayerClient:
@@ -99,18 +101,29 @@ class MultiplayerThread(threading.Thread):
                        + str(self.game.scoreboard.level) + ":"
                        + str(self.game.scoreboard.score) + ";"
                        + self.player_grid.get_state())
-                e = self.client.exchange(msg)
-                if e and e.startswith("STATE;"):
-                    split = e.split(";")
-                    score = split[1].split(":")[1]
-                    level = split[1].split(":")[0]
-                    try:
-                        self.opponent_scoreboard.level = level
-                        self.opponent_scoreboard.score = score
-                        self.opponent_grid.set_state(split[2:])
-                    except Exception:
-                        traceback.print_exc()
+                self._process_state_exchange(msg)
+            elif self.status.value == "LOSS":
+                msg = ("LOSS;"
+                       + str(self.game.scoreboard.level) + ":"
+                       + str(self.game.scoreboard.score) + ";")
+                self._process_state_exchange(msg)
             time.sleep(0.1)
+
+    def _process_state_exchange(self, msg: str):
+        e = self.client.exchange(msg)
+        if e and e.startswith("STATE;"):
+            split = e.split(";")
+            score = split[1].split(":")[1]
+            level = split[1].split(":")[0]
+            try:
+                self.opponent_scoreboard.level = level
+                self.opponent_scoreboard.score = score
+                self.opponent_grid.set_state(split[2:])
+            except Exception:
+                traceback.print_exc()
+        elif e and e.startswith("LOSS"):
+            split = e.split(";")
+            self.status.opponent_result = split[1]
 
     def terminate(self):
         self.running = False
@@ -141,8 +154,11 @@ class Multiplayer:
             self.active = True
 
     def draw(self, screen: Surface):
-        self.opponent.draw(screen)
-        self.opponent_score.draw(screen)
+        if self.status.opponent_result:
+            StateScreen.draw_opponent_loss(screen, self.status.opponent_result)
+        else:
+            self.opponent.draw(screen)
+            self.opponent_score.draw(screen)
 
     def set_ready(self):
         self.status.value = "READY"

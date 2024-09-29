@@ -31,7 +31,7 @@ class TetrisGame:
         self.figure_factory = TetrisFigureFactory(self.config.GRID_COLS,
                                                   self.config.GRID_ROWS,
                                                   self.config.SQUARE_SIZE)
-        self.scoreboard = ScoreBoard(self.config, self.animations)
+        self.scoreboard = ScoreBoard(self.config)
         self.movements = FigureMovement(self.grid)
         self._create_first_figures()
         self.state = GameState.RUNNING
@@ -44,11 +44,6 @@ class TetrisGame:
         self.accelerate_fall = False
         self.side_move_delay = 0
         self.level_increase_limit = self.config.LEVEL_ROW_LIMIT
-        self.opponent = GamingGrid(
-            self.config.GRID_COLS,
-            self.config.GRID_ROWS,
-            "Black",
-            self.config.SQUARE_SIZE)
 
     def update(self):
         time_gap = time.time() - self.last_time

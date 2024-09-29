@@ -1,7 +1,6 @@
 import pygame
 from pygame import Surface, font
 
-from src.animation import AnimatorFactory
 from src.config import GameConfig
 from src.figures import TetrisFigure
 
@@ -10,15 +9,18 @@ class ScoreBoard:
 
     def __init__(self,
                  config: GameConfig,
-                 animations: AnimatorFactory,
+                 with_next_figure: bool = True
                  ):
         self.config = config
         self.size = self.config.get_scoreboard_size()
         self.coords = (self.config.GRID_COLS * self.config.SQUARE_SIZE, 0)
         self.body = Surface(self.size)
         self.coords = self.coords
-        self.sample = Surface((self.config.SQUARE_SIZE * 4,
-                               self.config.SQUARE_SIZE * 4))
+        if with_next_figure:
+            self.sample = Surface((self.config.SQUARE_SIZE * 4,
+                                   self.config.SQUARE_SIZE * 4))
+        else:
+            self.sample = None
         self.score_area = Surface((self.config.SQUARE_SIZE * 4,
                                    self.config.SQUARE_SIZE * 2))
         self.level_area = Surface((self.config.SQUARE_SIZE * 4,
@@ -36,10 +38,11 @@ class ScoreBoard:
         self.body.fill("Black")
         self.score_area.fill("Black")
         self.level_area.fill("Black")
-        self.sample.fill("Black")
-        for s in self.next_figure.squares:
-            s.draw(self.sample)
-        self.body.blit(self.sample, (25, 25))
+        if self.sample:
+            self.sample.fill("Black")
+            for s in self.next_figure.squares:
+                s.draw(self.sample)
+            self.body.blit(self.sample, (25, 25))
         pygame.draw.line(self.body, (5, 17, 22), (0, 0), (0, self.size[1]), 5)
         self.draw_score()
         self.draw_level()

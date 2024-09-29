@@ -4,8 +4,10 @@ import threading
 import traceback
 import time
 
+from pygame import Surface
 from src.game import TetrisGame
 from src.gaming_grid import GamingGrid
+from src.scoreboard import ScoreBoard
 
 
 class ConnectionStatus:
@@ -67,16 +69,19 @@ class MultiplayerThread(threading.Thread):
 
     def __init__(self,
                  connection_status: ConnectionStatus,
-                 player_grid: GamingGrid,
+                 game: TetrisGame,
                  opponent_grid: GamingGrid,
+                 opponent_scoreboard: ScoreBoard,
                  host: str = "localhost",
                  port: int = 8080):
         threading.Thread.__init__(self)
+        self.game = game
         self.status = connection_status
         self.client = MultiplayerClient(host, port)
         self.client.connect()
-        self.player_grid = player_grid
+        self.player_grid = self.game.grid
         self.opponent_grid = opponent_grid
+        self.opponent_scoreboard = opponent_scoreboard
         self.running = True
 
     def run(self):
@@ -90,10 +95,19 @@ class MultiplayerThread(threading.Thread):
                 if e == "GO":
                     self.status.value = "PLAYING"
             elif self.status.value == "PLAYING":
-                e = self.client.exchange(self.player_grid.get_state())
-                if e:
+                msg = ("STATE;"
+                       + str(self.game.scoreboard.level) + ":"
+                       + str(self.game.scoreboard.score) + ";"
+                       + self.player_grid.get_state())
+                e = self.client.exchange(msg)
+                if e and e.startswith("STATE;"):
+                    split = e.split(";")
+                    score = split[1].split(":")[1]
+                    level = split[1].split(":")[0]
                     try:
-                        self.opponent_grid.set_state(e)
+                        self.opponent_scoreboard.level = level
+                        self.opponent_scoreboard.score = score
+                        self.opponent_grid.set_state(split[2:])
                     except Exception:
                         traceback.print_exc()
             time.sleep(0.1)
@@ -109,14 +123,26 @@ class Multiplayer:
     def __init__(self,
                  game: TetrisGame):
         self.game = game
+        self.config = self.game.config
+        self.opponent = GamingGrid(
+            self.config.GRID_COLS,
+            self.config.GRID_ROWS,
+            "Black",
+            self.config.SQUARE_SIZE * 0.96)
+        self.opponent_score = ScoreBoard(self.config, with_next_figure=False)
         self.active = False
         self.status = ConnectionStatus()
-        self.thread = MultiplayerThread(self.status, game.grid, game.opponent)
+        self.thread = MultiplayerThread(
+            self.status, self.game, self.opponent, self.opponent_score)
 
     def connect_to_room(self):
         if not self.active:
             self.thread.start()
             self.active = True
+
+    def draw(self, screen: Surface):
+        self.opponent.draw(screen)
+        self.opponent_score.draw(screen)
 
     def set_ready(self):
         self.status.value = "READY"

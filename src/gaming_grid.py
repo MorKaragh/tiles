@@ -254,8 +254,8 @@ class GamingGrid:
     def get_state(self) -> str:
         return self.__repr__()
 
-    def set_state(self, state: str):
+    def set_state(self, state: List[str]):
         self.clear()
-        for coord in state.split(";"):
+        for coord in state:
             x, y, z = coord.split(":")
             self.add_new_square(int(x), int(y), color=to_color_mapping[z])

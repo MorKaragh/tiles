@@ -34,17 +34,17 @@ bg = pygame.transform.scale(bg, (config.GRID_COLS * config.SQUARE_SIZE,
 
 main_menu = MultiplayerMenu(multiplayer)
 
-opponent_surf = Surface(((config.GRID_COLS + 5) * config.SQUARE_SIZE,
-                         config.GRID_ROWS * config.SQUARE_SIZE))
 player_surf = Surface(((config.GRID_COLS + 5) * config.SQUARE_SIZE,
                        config.GRID_ROWS * config.SQUARE_SIZE))
+
+opponent_surf = Surface(player_surf.get_size())
 
 
 def display_running():
     game.update()
     game.grid.draw(player_surf)
     game.scoreboard.draw(player_surf)
-    game.opponent.draw(opponent_surf)
+    multiplayer.draw(opponent_surf)
     screen.blit(player_surf, (0, 0))
     screen.blit(opponent_surf,
                 ((config.GRID_COLS + 5) * config.SQUARE_SIZE, 0))
@@ -56,7 +56,7 @@ while game.running:
     clock.tick(60)
     screen.fill("Black")
     player_surf.fill("Black")
-    opponent_surf.fill("Grey")
+    opponent_surf.fill("midnightblue")
     player_surf.blit(bg, (0, 0))
 
     if game.state == GameState.RUNNING:
@@ -65,7 +65,7 @@ while game.running:
         game.grid.draw(screen)
         game.scoreboard.draw(screen)
     elif game.state == GameState.LOSS:
-        game.opponent.draw(opponent_surf)
+        multiplayer.draw(opponent_surf)
         StateScreen.draw_loss(player_surf, game)
         screen.blit(player_surf, (0, 0))
         screen.blit(opponent_surf,

@@ -12,6 +12,9 @@ config = GameConfig.load_default()
 config.MULTIPLAYER = False
 
 pygame.init()
+infoObject = pygame.display.Info()
+config.SQUARE_SIZE = infoObject.current_h / 25
+
 screen = pygame.display.set_mode(((config.GRID_COLS + 5) * config.SQUARE_SIZE,
                                   config.GRID_ROWS * config.SQUARE_SIZE))
 pygame.display.set_caption("Tetris")

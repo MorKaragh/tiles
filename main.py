@@ -8,12 +8,11 @@ from src.state_screen import StateScreen
 from src.input_control import process_events, process_pressed_keys
 from src.utils import get_grid_state_logger
 
+pygame.init()
+
 config = GameConfig.load_default()
 config.MULTIPLAYER = False
-
-pygame.init()
-infoObject = pygame.display.Info()
-config.SQUARE_SIZE = infoObject.current_h / 25
+config.SQUARE_SIZE = pygame.display.Info().current_h / 25
 
 screen = pygame.display.set_mode(((config.GRID_COLS + 5) * config.SQUARE_SIZE,
                                   config.GRID_ROWS * config.SQUARE_SIZE))

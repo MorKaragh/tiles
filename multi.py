@@ -11,6 +11,7 @@ from src.utils import get_grid_state_logger
 
 config = GameConfig.load_default()
 config.MULTIPLAYER = True
+config.SQUARE_SIZE = 25
 
 pygame.init()
 screen = pygame.display.set_mode(
@@ -56,7 +57,7 @@ while game.running:
     clock.tick(60)
     screen.fill("Black")
     player_surf.fill("Black")
-    opponent_surf.fill("midnightblue")
+    opponent_surf.fill((5, 9, 22))
     player_surf.blit(bg, (0, 0))
 
     if game.state == GameState.RUNNING:

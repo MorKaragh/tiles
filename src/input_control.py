@@ -16,24 +16,29 @@ def process_pressed_keys(pressed, game, config):
         game.fall_speed_factor = 0
 
 
-def _process_keydown(event, game: TetrisGame, config: GameConfig):
-    if event.key in [pygame.K_UP, pygame.K_k]:
-        game.movements.rotate()
-    elif event.key in [pygame.K_DOWN, pygame.K_j]:
-        game.accelerate_fall = True
-    elif event.key in [pygame.K_RIGHT, pygame.K_l]:
-        game.side_move_delay = -3
-        game.movements.move_right()
-    elif event.key in [pygame.K_LEFT, pygame.K_h]:
-        game.side_move_delay = -3
-        game.movements.move_left()
-    elif event.key == pygame.K_ESCAPE:
-        game.state = GameState.MENU
-    elif event.key == pygame.K_SPACE:
+def _process_keydown(event, game: TetrisGame,
+                     config: GameConfig,
+                     multiplayer: Multiplayer = None):
+    if game.state != GameState.PAUSE:
+        if event.key in [pygame.K_UP, pygame.K_k]:
+            game.movements.rotate()
+        elif event.key in [pygame.K_DOWN, pygame.K_j]:
+            game.accelerate_fall = True
+        elif event.key in [pygame.K_RIGHT, pygame.K_l]:
+            game.side_move_delay = -3
+            game.movements.move_right()
+        elif event.key in [pygame.K_LEFT, pygame.K_h]:
+            game.side_move_delay = -3
+            game.movements.move_left()
+        elif event.key == pygame.K_ESCAPE:
+            game.state = GameState.MENU
+    if event.key == pygame.K_SPACE:
         if game.state == GameState.PAUSE:
             game.state = GameState.RUNNING
         elif game.state == GameState.LOSS:
             game.reset()
+            if multiplayer:
+                multiplayer.reset()
         else:
             game.state = GameState.PAUSE
 
@@ -49,7 +54,7 @@ def process_events(events, game: TetrisGame,
             if multiplayer:
                 multiplayer.terminate()
         elif event.type == pygame.KEYDOWN:
-            _process_keydown(event, game, config)
+            _process_keydown(event, game, config, multiplayer)
         elif event.type == pygame.KEYUP:
             if event.key in [pygame.K_DOWN, pygame.K_j]:
                 game.accelerate_fall = False

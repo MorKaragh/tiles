@@ -112,6 +112,7 @@ class MultiplayerThread(threading.Thread):
     def _process_state_exchange(self, msg: str):
         e = self.client.exchange(msg)
         if e and e.startswith("STATE;"):
+            self.status.opponent_result = None
             split = e.split(";")
             score = split[1].split(":")[1]
             level = split[1].split(":")[0]
@@ -123,7 +124,7 @@ class MultiplayerThread(threading.Thread):
                 traceback.print_exc()
         elif e and e.startswith("LOSS"):
             split = e.split(";")
-            self.status.opponent_result = split[1]
+            self.status.opponent_result = split[1].split(":")[1]
 
     def terminate(self):
         self.running = False
@@ -159,6 +160,9 @@ class Multiplayer:
         else:
             self.opponent.draw(screen)
             self.opponent_score.draw(screen)
+
+    def reset(self):
+        self.status.value = "PLAYING"
 
     def set_ready(self):
         self.status.value = "READY"

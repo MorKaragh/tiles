@@ -11,7 +11,7 @@ class StateScreen:
         surf.fill((5, 17, 22))
         big_font = font.Font("fonts/Oldtimer-GOPpg.ttf", 60)
         small_font = font.Font("fonts/Oldtimer-GOPpg.ttf", 30)
-        main_text = big_font.render("Game over!", True, "White")
+        main_text = big_font.render("Finished", True, "White")
         score_text = small_font.render(f"score: {game.scoreboard.score}",
                                        True, "White")
         curr_record = load_for_player(game.config.PLAYER)
@@ -31,7 +31,7 @@ class StateScreen:
     @staticmethod
     def draw_opponent_loss(screen, score: str):
         surf = Surface(screen.get_size())
-        surf.fill((5, 17, 22))
+        surf.fill((5, 9, 22))
         big_font = font.Font("fonts/Oldtimer-GOPpg.ttf", 60)
         small_font = font.Font("fonts/Oldtimer-GOPpg.ttf", 30)
         main_text = big_font.render("Finished", True, "White")

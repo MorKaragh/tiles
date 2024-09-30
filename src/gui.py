@@ -65,6 +65,8 @@ class MultiplayerMenu:
                 self.run_btn.set_title("READY")
             case "WFR":
                 self.run_btn.set_title("READY")
+            case "READY":
+                self.run_btn.set_title("YOU ARE READY")
             case "PLAYING":
                 self.run_btn.set_title("START")
             case _:

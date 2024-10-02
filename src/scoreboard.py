@@ -25,8 +25,10 @@ class ScoreBoard:
                                    self.config.SQUARE_SIZE * 2))
         self.level_area = Surface((self.config.SQUARE_SIZE * 4,
                                    self.config.SQUARE_SIZE * 2))
-        self.score_font = font.Font("fonts/Dimkin Regular.ttf", 40)
-        self.level_font = font.Font("fonts/Dimkin Regular.ttf", 50)
+        self.score_font = font.Font("fonts/Dimkin Regular.ttf",
+                                    int(self.config.SQUARE_SIZE))
+        self.level_font = font.Font("fonts/Dimkin Regular.ttf",
+                                    int(self.config.SQUARE_SIZE * 1.2))
         self.score = 0
         self.level = self.config.LEVEL
 

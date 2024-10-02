@@ -91,7 +91,8 @@ class MultiplayerThread(threading.Thread):
             print(self.status.value)
             if self.status.value in ["WFP", "WFS", "IDLE"]:
                 e = self.client.exchange("ROOM:TESTROOM:PLAYER")
-                self.status.value = e
+                if self.status.value not in ["READY", "PLAYING"]:
+                    self.status.value = e
             elif self.status.value == "READY":
                 e = self.client.exchange("READY")
                 if e == "GO":
@@ -142,7 +143,7 @@ class Multiplayer:
             self.config.GRID_COLS,
             self.config.GRID_ROWS,
             "Black",
-            self.config.SQUARE_SIZE * 0.96)
+            self.config.SQUARE_SIZE)
         self.opponent_score = ScoreBoard(self.config, with_next_figure=False)
         self.active = False
         self.status = ConnectionStatus()

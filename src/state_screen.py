@@ -29,9 +29,10 @@ class StateScreen:
         screen.blit(surf, (0, 0))
 
     @staticmethod
-    def draw_opponent_loss(screen, score: str):
+    def draw_multiplayer_loss(screen, score: str, is_player: bool = False):
+        color = (5, 17, 22) if is_player else (5, 9, 22)
         surf = Surface(screen.get_size())
-        surf.fill((5, 9, 22))
+        surf.fill(color)
         big_font = font.Font("fonts/Oldtimer-GOPpg.ttf", 60)
         small_font = font.Font("fonts/Oldtimer-GOPpg.ttf", 30)
         main_text = big_font.render("Finished", True, "White")
@@ -42,6 +43,16 @@ class StateScreen:
             center=(screen.get_size()[0]/2, 3*screen.get_size()[1]/5))
         surf.blit(main_text, main_rect)
         surf.blit(score_text, score_rect)
+        screen.blit(surf, (0, 0))
+
+    def draw_disconnect(screen):
+        surf = Surface(screen.get_size())
+        surf.fill((5, 9, 22))
+        big_font = font.Font("fonts/Oldtimer-GOPpg.ttf", 30)
+        main_text = big_font.render("DISCONNECTED", True, "White")
+        main_rect = main_text.get_rect(
+            center=(screen.get_size()[0]/2, screen.get_size()[1]/2))
+        surf.blit(main_text, main_rect)
         screen.blit(surf, (0, 0))
 
     @staticmethod

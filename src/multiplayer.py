@@ -88,7 +88,6 @@ class MultiplayerThread(threading.Thread):
 
     def run(self):
         while self.running:
-            print(self.status.value)
             if self.status.value in ["WFP", "WFS", "IDLE"]:
                 e = self.client.exchange("ROOM:TESTROOM:PLAYER")
                 if self.status.value not in ["READY", "PLAYING"]:
@@ -126,6 +125,8 @@ class MultiplayerThread(threading.Thread):
         elif e and e.startswith("LOSS"):
             split = e.split(";")
             self.status.opponent_result = split[1].split(":")[1]
+        elif e and e.startswith("DISCONNECT"):
+            self.status.value = "DISCONNECT"
 
     def terminate(self):
         self.running = False
@@ -157,7 +158,11 @@ class Multiplayer:
 
     def draw(self, screen: Surface):
         if self.status.opponent_result:
-            StateScreen.draw_opponent_loss(screen, self.status.opponent_result)
+            StateScreen.draw_multiplayer_loss(screen,
+                                              self.status.opponent_result,
+                                              False)
+        elif self.status.value == "DISCONNECT":
+            StateScreen.draw_disconnect(screen)
         else:
             self.opponent.draw(screen)
             self.opponent_score.draw(screen)

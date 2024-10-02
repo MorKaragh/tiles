@@ -68,7 +68,9 @@ while game.running:
     elif game.state == GameState.LOSS:
         multiplayer.status.value = "LOSS"
         multiplayer.draw(opponent_surf)
-        StateScreen.draw_loss(player_surf, game)
+        StateScreen.draw_multiplayer_loss(player_surf,
+                                          game.scoreboard.score,
+                                          True)
         screen.blit(player_surf, (0, 0))
         screen.blit(opponent_surf,
                     ((config.GRID_COLS + 5) * config.SQUARE_SIZE, 0))

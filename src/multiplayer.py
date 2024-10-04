@@ -107,7 +107,7 @@ class MultiplayerThread(threading.Thread):
                            + str(self.game.scoreboard.level) + ":"
                            + str(self.game.scoreboard.score) + ";")
                     self._process_state_exchange(msg)
-            except (BrokenPipeError, ConnectionResetError):
+            except (BrokenPipeError, ConnectionResetError, OSError):
                 self.status.value = "NO_CONNECTION"
                 self.client.close()
                 self.running = False

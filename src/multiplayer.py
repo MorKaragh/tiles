@@ -86,6 +86,7 @@ class MultiplayerThread(threading.Thread):
 
     def run(self):
         while self.running:
+            print(self.status.value)
             try:
                 if self.status.value in ["WFP", "WFS", "IDLE"]:
                     e = self.client.exchange("ROOM:TESTROOM:PLAYER")
@@ -109,7 +110,7 @@ class MultiplayerThread(threading.Thread):
             except (BrokenPipeError, ConnectionResetError):
                 self.status.value = "NO_CONNECTION"
                 self.client.close()
-                self.runnint = False
+                self.running = False
             time.sleep(0.1)
 
     def _process_state_exchange(self, msg: str):
@@ -126,7 +127,7 @@ class MultiplayerThread(threading.Thread):
             split = e.split(";")
             self.status.opponent_result = split[1].split(":")[1]
         elif e and e.startswith("DISCONNECT"):
-            self.status.value = "DISCONNECT"
+            self.status.opponent_result = "DISCONNECT"
 
     def terminate(self):
         self.running = False
@@ -168,7 +169,7 @@ class Multiplayer:
             StateScreen.draw_multiplayer_loss(screen,
                                               self.status.opponent_result,
                                               False)
-        elif self.status.value == "DISCONNECT":
+        elif self.status.opponent_result == "DISCONNECT":
             StateScreen.draw_text(screen, "PLAYER \n DISCONNECT")
         elif self.status.value == "NO_CONNECTION":
             StateScreen.draw_text(screen, "NO CONNECTION")

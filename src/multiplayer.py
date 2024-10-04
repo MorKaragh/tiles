@@ -1,7 +1,6 @@
 import socket
 import struct
 import threading
-import traceback
 import time
 
 from pygame import Surface
@@ -58,13 +57,12 @@ class MultiplayerClient:
         try:
             self.send_message(state)
             return self.receive_message()
-        except Exception as e:
-            print(e)
+        except TimeoutError:
+            pass
 
     def close(self):
         if self.socket:
             self.socket.close()
-            print("closed connection")
 
 
 class MultiplayerThread(threading.Thread):
@@ -88,25 +86,30 @@ class MultiplayerThread(threading.Thread):
 
     def run(self):
         while self.running:
-            if self.status.value in ["WFP", "WFS", "IDLE"]:
-                e = self.client.exchange("ROOM:TESTROOM:PLAYER")
-                if self.status.value not in ["READY", "PLAYING"]:
-                    self.status.value = e
-            elif self.status.value == "READY":
-                e = self.client.exchange("READY")
-                if e == "GO":
-                    self.status.value = "PLAYING"
-            elif self.status.value == "PLAYING":
-                msg = ("STATE;"
-                       + str(self.game.scoreboard.level) + ":"
-                       + str(self.game.scoreboard.score) + ";"
-                       + self.player_grid.get_state())
-                self._process_state_exchange(msg)
-            elif self.status.value == "LOSS":
-                msg = ("LOSS;"
-                       + str(self.game.scoreboard.level) + ":"
-                       + str(self.game.scoreboard.score) + ";")
-                self._process_state_exchange(msg)
+            try:
+                if self.status.value in ["WFP", "WFS", "IDLE"]:
+                    e = self.client.exchange("ROOM:TESTROOM:PLAYER")
+                    if self.status.value not in ["READY", "PLAYING"]:
+                        self.status.value = e
+                elif self.status.value == "READY":
+                    e = self.client.exchange("READY")
+                    if e == "GO":
+                        self.status.value = "PLAYING"
+                elif self.status.value == "PLAYING":
+                    msg = ("STATE;"
+                           + str(self.game.scoreboard.level) + ":"
+                           + str(self.game.scoreboard.score) + ";"
+                           + self.player_grid.get_state())
+                    self._process_state_exchange(msg)
+                elif self.status.value == "LOSS":
+                    msg = ("LOSS;"
+                           + str(self.game.scoreboard.level) + ":"
+                           + str(self.game.scoreboard.score) + ";")
+                    self._process_state_exchange(msg)
+            except (BrokenPipeError, ConnectionResetError):
+                self.status.value = "NO_CONNECTION"
+                self.client.close()
+                self.runnint = False
             time.sleep(0.1)
 
     def _process_state_exchange(self, msg: str):
@@ -116,12 +119,9 @@ class MultiplayerThread(threading.Thread):
             split = e.split(";")
             score = split[1].split(":")[1]
             level = split[1].split(":")[0]
-            try:
-                self.opponent_scoreboard.level = level
-                self.opponent_scoreboard.score = score
-                self.opponent_grid.set_state(split[2:])
-            except Exception:
-                traceback.print_exc()
+            self.opponent_scoreboard.level = level
+            self.opponent_scoreboard.score = score
+            self.opponent_grid.set_state(split[2:])
         elif e and e.startswith("LOSS"):
             split = e.split(";")
             self.status.opponent_result = split[1].split(":")[1]
@@ -156,13 +156,22 @@ class Multiplayer:
             self.thread.start()
             self.active = True
 
+    def reconnect(self):
+        self.status.value = "IDLE"
+        self.thread.terminate()
+        self.thread = MultiplayerThread(
+            self.status, self.game, self.opponent, self.opponent_score)
+        self.thread.start()
+
     def draw(self, screen: Surface):
         if self.status.opponent_result:
             StateScreen.draw_multiplayer_loss(screen,
                                               self.status.opponent_result,
                                               False)
         elif self.status.value == "DISCONNECT":
-            StateScreen.draw_disconnect(screen)
+            StateScreen.draw_text(screen, "PLAYER \n DISCONNECT")
+        elif self.status.value == "NO_CONNECTION":
+            StateScreen.draw_text(screen, "NO CONNECTION")
         else:
             self.opponent.draw(screen)
             self.opponent_score.draw(screen)

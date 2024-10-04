@@ -45,11 +45,12 @@ class StateScreen:
         surf.blit(score_text, score_rect)
         screen.blit(surf, (0, 0))
 
-    def draw_disconnect(screen):
+    @staticmethod
+    def draw_text(screen: Surface, text: str):
         surf = Surface(screen.get_size())
         surf.fill((5, 9, 22))
         big_font = font.Font("fonts/Oldtimer-GOPpg.ttf", 30)
-        main_text = big_font.render("DISCONNECTED", True, "White")
+        main_text = big_font.render(text, True, "White")
         main_rect = main_text.get_rect(
             center=(screen.get_size()[0]/2, screen.get_size()[1]/2))
         surf.blit(main_text, main_rect)

@@ -69,6 +69,8 @@ class MultiplayerMenu:
                 self.run_btn.set_title("YOU ARE READY")
             case "PLAYING":
                 self.run_btn.set_title("START")
+            case "NO_CONNECTION":
+                self.run_btn.set_title("CONNECT")
             case _:
                 self.run_btn.set_title(self.multiplayer.status.value)
 
@@ -87,6 +89,8 @@ class MultiplayerMenu:
             case "WFR":
                 self.multiplayer.set_ready()
             case "IDLE":
+                self.multiplayer.connect_to_room()
+            case "NO_CONNECTION":
                 self.multiplayer.connect_to_room()
 
     def change_level(self, val: int) -> None:

@@ -14,6 +14,7 @@ class ConnectionStatus:
 
     def __init__(self):
         self.value = "IDLE"
+        self.connection = "NO_CONNECTION"
         self.opponent_result = None
 
 
@@ -79,6 +80,7 @@ class MultiplayerThread(threading.Thread):
         self.status = connection_status
         self.client = MultiplayerClient(host, port)
         self.client.connect()
+        self.status.connection = "CONNECTED"
         self.player_grid = self.game.grid
         self.opponent_grid = opponent_grid
         self.opponent_scoreboard = opponent_scoreboard
@@ -108,7 +110,7 @@ class MultiplayerThread(threading.Thread):
                            + str(self.game.scoreboard.score) + ";")
                     self._process_state_exchange(msg)
             except (BrokenPipeError, ConnectionResetError, OSError):
-                self.status.value = "NO_CONNECTION"
+                self.status.connection = "NO_CONNECTION"
                 self.client.close()
                 self.running = False
             time.sleep(0.1)
@@ -131,7 +133,6 @@ class MultiplayerThread(threading.Thread):
 
     def terminate(self):
         self.running = False
-        self.client.exchange("QUIT")
         self.client.close()
 
 
@@ -164,6 +165,9 @@ class Multiplayer:
             self.status, self.game, self.opponent, self.opponent_score)
         self.thread.start()
 
+    def set_loss(self):
+        self.status.value = "LOSS"
+
     def draw(self, screen: Surface):
         if self.status.opponent_result:
             StateScreen.draw_multiplayer_loss(screen,
@@ -171,7 +175,7 @@ class Multiplayer:
                                               False)
         elif self.status.opponent_result == "DISCONNECT":
             StateScreen.draw_text(screen, "PLAYER \n DISCONNECT")
-        elif self.status.value == "NO_CONNECTION":
+        elif self.status.connection == "NO_CONNECTION":
             StateScreen.draw_text(screen, "NO CONNECTION")
         else:
             self.opponent.draw(screen)

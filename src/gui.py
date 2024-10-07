@@ -69,16 +69,19 @@ class MultiplayerMenu:
                 self.run_btn.set_title("YOU ARE READY")
             case "PLAYING":
                 self.run_btn.set_title("START")
-            case "NO_CONNECTION":
-                self.run_btn.set_title("CONNECT")
             case _:
                 self.run_btn.set_title(self.multiplayer.status.value)
+        if self.multiplayer.status.connection == "NO_CONNECTION":
+            self.run_btn.set_title("CONNECT")
 
     def set_lvl_auto_change(self, selected: Tuple, value: Any) -> None:
         self.game.config.LEVEL_INCREASE = value
 
     def start_the_game(self) -> None:
         print(self.multiplayer.status)
+        if self.multiplayer.status.connection == "NO_CONNECTION":
+            self.multiplayer.reconnect()
+            return
         match self.multiplayer.status.value:
             case "PLAYING":
                 self.game.reset()
@@ -89,8 +92,6 @@ class MultiplayerMenu:
             case "WFR":
                 self.multiplayer.set_ready()
             case "IDLE":
-                self.multiplayer.connect_to_room()
-            case "NO_CONNECTION":
                 self.multiplayer.connect_to_room()
 
     def change_level(self, val: int) -> None:
@@ -148,5 +149,3 @@ class MainMenu:
 
     def change_player(self, val: str):
         self.game.config.PLAYER = val
-
-

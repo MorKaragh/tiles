@@ -31,6 +31,7 @@ class MultiplayerClient:
             self.socket.connect((self.host, self.port))
             self.socket.settimeout(0.1)
         except Exception as e:
+            print("cannot connect")
             print(e)
 
     def send_message(self, msg: str):
@@ -73,12 +74,12 @@ class MultiplayerThread(threading.Thread):
                  game: TetrisGame,
                  opponent_grid: GamingGrid,
                  opponent_scoreboard: ScoreBoard,
-                 host: str = "localhost",
-                 port: int = 8080):
+                 server: str,
+                 port: int):
         threading.Thread.__init__(self)
         self.game = game
         self.status = connection_status
-        self.client = MultiplayerClient(host, port)
+        self.client = MultiplayerClient(server, port)
         self.client.connect()
         self.status.connection = "CONNECTED"
         self.player_grid = self.game.grid
@@ -139,8 +140,12 @@ class MultiplayerThread(threading.Thread):
 class Multiplayer:
 
     def __init__(self,
-                 game: TetrisGame):
+                 game: TetrisGame,
+                 server: str = "localhost",
+                 port: int = 8080):
         self.game = game
+        self.server = server
+        self.port = port
         self.config = self.game.config
         self.opponent = GamingGrid(
             self.config.GRID_COLS,
@@ -151,7 +156,12 @@ class Multiplayer:
         self.active = False
         self.status = ConnectionStatus()
         self.thread = MultiplayerThread(
-            self.status, self.game, self.opponent, self.opponent_score)
+            connection_status=self.status,
+            game=self.game,
+            opponent_grid=self.opponent,
+            opponent_scoreboard=self.opponent_score,
+            server=self.server,
+            port=self.port)
 
     def connect_to_room(self):
         if not self.active:
@@ -162,7 +172,9 @@ class Multiplayer:
         self.status.value = "IDLE"
         self.thread.terminate()
         self.thread = MultiplayerThread(
-            self.status, self.game, self.opponent, self.opponent_score)
+            self.status, self.game,
+            self.opponent, self.opponent_score,
+            self.server, self.port)
         self.thread.start()
 
     def set_loss(self):
